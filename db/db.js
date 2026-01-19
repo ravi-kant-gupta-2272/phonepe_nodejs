@@ -29,36 +29,36 @@ const createUsersTable = async () => {
   }
 };
 
-const createMerchantTable = async () => {
-  const dropQuery = `DROP TABLE IF EXISTS merchants;`;
+// const createMerchantTable = async () => {
+//   const dropQuery = `DROP TABLE IF EXISTS merchants;`;
 
-  const createQuery = `
-    CREATE TABLE IF NOT EXISTS merchants (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(150) NOT NULL,
-        callback_url TEXT NOT NULL,
-        webhook_username TEXT NOT NULL,
-        webhook_password TEXT NOT NULL,
-        client_id VARCHAR(150) NOT NULL,
-        client_version VARCHAR(20) NOT NULL,
-        client_secret TEXT NOT NULL,
-        environment VARCHAR(20) NOT NULL
-            CHECK (environment IN ('sandbox', 'production')),
-        created_by INTEGER NOT NULL,
-        created_at TIMESTAMPTZ DEFAULT NOW(),
-        updated_at TIMESTAMPTZ DEFAULT NOW()
-    );`;
+//   const createQuery = `
+//     CREATE TABLE IF NOT EXISTS merchants (
+//         id SERIAL PRIMARY KEY,
+//         name VARCHAR(150) NOT NULL,
+//         callback_url TEXT NOT NULL,
+//         webhook_username TEXT NOT NULL,
+//         webhook_password TEXT NOT NULL,
+//         client_id VARCHAR(150) NOT NULL,
+//         client_version VARCHAR(20) NOT NULL,
+//         client_secret TEXT NOT NULL,
+//         environment VARCHAR(20) NOT NULL
+//             CHECK (environment IN ('sandbox', 'production')),
+//         created_by INTEGER NOT NULL,
+//         created_at TIMESTAMPTZ DEFAULT NOW(),
+//         updated_at TIMESTAMPTZ DEFAULT NOW()
+//     );`;
 
-  try {
-    // Delete the table if it exists, then recreate it
-    // await pool.query(dropQuery);
-    await pool.query(createQuery);
+//   try {
+//     // Delete the table if it exists, then recreate it
+//     // await pool.query(dropQuery);
+//     await pool.query(createQuery);
 
-    console.log("merchants table recreated successfully");
-  } catch (error) {
-    console.error("Error in creating merchants table:", error.message);
-  }
-};
+//     console.log("merchants table recreated successfully");
+//   } catch (error) {
+//     console.error("Error in creating merchants table:", error.message);
+//   }
+// };
 
 
 const pool = new Pool({
@@ -73,7 +73,7 @@ pool.connect()
   .then(() => {
     console.log("PostgreSQL connected");
     createUsersTable();
-    createMerchantTable();
+    // createMerchantTable();
   })
   .catch(err => console.error("Connection error", err));
 
