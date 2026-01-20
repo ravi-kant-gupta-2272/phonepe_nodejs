@@ -1,5 +1,4 @@
-require("dotenv").config();
-
+import 'dotenv/config';
 
 const dbConfig = {
   db:{
@@ -8,6 +7,7 @@ const dbConfig = {
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
     db_port: process.env.DB_PORT,
+    db_url: process.env.DATABASE_URL
   },
 
   app:{
@@ -16,4 +16,4 @@ const dbConfig = {
   
 };
 
-module.exports = dbConfig;
+export default dbConfig;

@@ -1,22 +1,23 @@
-const express = require('express');
-const registerUser = require('../controllers/user/user.register');
-const loginUser = require('../controllers/user/user.login');
-const resetUserPassword = require("../controllers/user/password.reset")
-const refeshTokenController = require("../controllers/user/refresh.token")
-
+import express from 'express';
+import {
+  registerUser,
+  loginUser,
+  resetUserPassword,
+  refreshTokenController
+} from '../controllers/user/user.controller.js';
 
 const userRouter = express.Router();
 
 // Register user route
-userRouter.post("/register", registerUser);
+userRouter.post('/register', registerUser);
 
 // Login user route
-userRouter.post("/login", loginUser);
+userRouter.post('/login', loginUser);
 
 // Reset Password route
-userRouter.post("/reset", resetUserPassword);
+userRouter.post('/reset', resetUserPassword);
 
 // Refresh token route
-userRouter.post('/refresh/token', refeshTokenController);
+userRouter.post('/refresh/token', refreshTokenController);
 
-module.exports = userRouter;
+export default userRouter;
