@@ -25,3 +25,31 @@ model User {
 
   @@map("users")
 }
+
+enum Environment {
+  SANDBOX
+  PRODUCTION
+}
+
+model Merchant {
+  id               Int          @id @default(autoincrement())
+  name             String
+  callback_url      String
+  webhook_username  String
+  webhook_password  String
+  client_id         String       @unique
+  client_version    Int
+  client_secret     String       @unique
+  merchant_id       String       @unique
+  environment      Environment
+  created_by        Int
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([merchant_id])
+  @@index([client_id])
+
+  @@map("merchant")
+}
+
+
