@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // ***** user Routes *****
-app.use("/api", userRouter);
+app.use("/api/user", userRouter);
 
 app.get('/', (req, res) => {
   res.send('Phonepe APIs is running');
