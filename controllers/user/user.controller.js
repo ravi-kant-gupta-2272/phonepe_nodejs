@@ -104,7 +104,7 @@ export const loginUser = async (req, res, next) => {
 
     // Generate JWT valid for 7 days
     const token = jwt.sign(
-      { userId: user.id, name: user.email },
+      { userId: user.id, email: user.email },
       process.env.JWT_SECRET || 'jwt_secret_key',
       { expiresIn: '7d' }
     );
