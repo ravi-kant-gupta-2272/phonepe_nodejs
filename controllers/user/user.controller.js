@@ -2,38 +2,29 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../../config/prismaClient.js';
 import AppError from '../../utils/app.error.js';
+import validateFields from '../../utils/validator.js'
+import {USER_ERROR_MESSAGES} from '../../utils/app.constant.js'
+import catchAsync from '../../utils/catchAsync.js';
 
 // ***** REGISTER USER CONTROLLER ***** //
-export const registerUser = async (req, res, next) => {
+export const registerUser = catchAsync(async (req, res) => {
   const { name, password, email } = req.body;
 
-  try {
-    // Handle name validation
-    if (name === undefined || name === "") {
-        throw {message: "Missing name!", statusCode: 401};
-    }
+  // Handle name validation
+    validateFields(name, 'name', 'string');
 
     // Handle email validation
-    if (email === undefined || email === "" ) {
-        throw {message: "Missing email!", statusCode: 401};
-    }
+    validateFields(email, 'email', 'string');
 
     // Handle password validation
-    if (password === undefined || password === "") {
-        throw {message: "Missing password!", statusCode: 401};
-    }
+    validateFields(password, 'password', 'string');
 
-    const existingUser = await prisma.user.findMany({
-      where: {
-        OR: [
-          { name },
-          { email }
-        ]
-      }
+    const existingUser = await prisma.user.findUnique({
+      where: {email: email}
     });
-
-    if (existingUser.length !== 0) {
-      throw { message: 'name or email already exists', statusCode: 400 };
+  
+    if (existingUser) {
+      throw new AppError(USER_ERROR_MESSAGES.NAME_OR_EMAIL_ALREADY_EXISTS, 400);
     }
 
     // Hash password
@@ -52,31 +43,22 @@ export const registerUser = async (req, res, next) => {
       }
     });
 
+    if(!user) throw new AppError(USER_ERROR_MESSAGES.USER_REGISTRATION_FAILED, 400);
 
     res.status(201).json({
-      message: 'User registered successfully',
+      message: USER_ERROR_MESSAGES.USER_REGISTERED_SUCCESSFULLY,
     });
-  } catch (error) {
-    const errorRes = new AppError(error.message, 400);
-    next(errorRes);
-  }
-};
+});
 
 // ***** LOGIN USER CONTROLLER ***** //
-export const loginUser = async (req, res, next) => {
+export const loginUser = catchAsync(async (req, res) => {
   const { email, password } = req.body;
 
-  try {
-
-    // Handle email validation
-    if (email === undefined || email === "" ) {
-        throw {message: "Missing email!", statusCode: 401};
-    }
+  // Handle email validation
+    validateFields(email, 'email', 'string');
 
     // Handle password validation
-    if (password === undefined || password === "") {
-        throw {message: "Missing password!", statusCode: 401};
-    }
+    validateFields(password, 'password', 'string');
 
     const users = await prisma.user.findMany({
       where: {
@@ -90,39 +72,37 @@ export const loginUser = async (req, res, next) => {
       },
     });
 
-
     // Handle user data validation
     if (users.length === 0) {
-        throw {message: "Invalid name or password", statusCode: 401};
+        throw new AppError( USER_ERROR_MESSAGES.WRONG_EMAIL_ID, 401);
     }
+
     const user = users[0];
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      throw {message: "Invalid name or password", statusCode: 401};
+      throw new AppError( USER_ERROR_MESSAGES.INVALID_PASSWORD, 401);
     }
 
     // Generate JWT valid for 7 days
     const token = jwt.sign(
       { userId: user.id, email: user.email },
-      process.env.JWT_SECRET || 'jwt_secret_key',
+      process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
-    //Save token into DB
+    // Update updated_at into DB
     await prisma.user.update({
       where: {
         id: user.id,
       },
       data: {
-        token: token,
         updated_at: new Date(),
       },
     });
 
-
     res.status(200).json({
-      message: 'Login successful',
+      message: USER_ERROR_MESSAGES.LOGIN_SUCCESSFUL,
       token,
       user: {
         id: user.id,
@@ -130,65 +110,52 @@ export const loginUser = async (req, res, next) => {
         email: user.email,
       },
     });
-  } catch (error) {
-    const errorRes = new AppError(error.message, error.statusCode || 500);
-    next(errorRes);
-  }
-};
+});
 
 // ***** REFRESH TOKEN USER CONTROLLER ***** //
-export const refreshTokenController = async (req, res, next) => {
-  try {
-    const { userid, email } = req.body;
+export const refreshTokenController = catchAsync(async (req, res) => {
+  const { userid, email } = req.body;
 
-    if (userid === undefined || typeof userid !== 'number') {
-      throw { message: "user Id is Missing or user Id is not Integer type.", statusCode: 400 };
-    }
+    // Handle userid validation
+    validateFields(userid, 'userid', 'number');
 
-    if (email === undefined || typeof email !== 'string') {
-      throw { message: "email is Missing or Wrong data type.", statusCode: 400 };
-    }
+    // Handle email validation
+    validateFields(email, 'email', 'string');
 
-    const token = jwt.sign(
-      { userId: userid, name: email },
-      process.env.JWT_SECRET || 'jwt_secret_key',
-      { expiresIn: '7d' }
-    );
-
-    // Insert JWT into merchants table (Postgres)
-    const updateResult = await prisma.user.update({
+    // Get user Data
+    const user = await prisma.user.findUnique({
       where: {
         id: userid,
       },
-      data: {
-        token: token,
-      },
+      select:{
+        email: true,
+        id: true
+      }
     });
 
-    if (updateResult === undefined) {
-      throw { message: "Failed to save token.", statusCode: 400 };
-    }
+    if(!user) throw new AppError( USER_ERROR_MESSAGES.USER_NOT_FOUND, 400 );
 
-    return res.status(200).json({ status: 'success', token });
-  } catch (err) {
-    const error = new AppError(err.message, err.statusCode || 500);
-    next(error);
-  }
-};
+    if(user.email !== email) throw new AppError( USER_ERROR_MESSAGES.WRONG_EMAIL_ID, 400 );
+
+    const token = jwt.sign(
+      { userId: userid, name: email },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    return res.status(200).json({ status: USER_ERROR_MESSAGES.TOKEN_REFRESHED, token });
+
+});
 
 // ***** RESET USER PASWORD USER CONTROLLER ***** //
-export const resetUserPassword = async (req, res, next) => {
+export const resetUserPassword = catchAsync(async (req, res) => {
   const { email, password } = req.body;
-  try {
-    // Handle email Validtion
-    if (email === undefined || email === "" ) {
-        throw {message: "Missing email!", statusCode: 401};
-    }
+
+    // Handle email validation
+    validateFields(email, 'email', 'string');
 
     // Handle password validation
-    if (password === undefined || password === "") {
-        throw {message: "Missing password!", statusCode: 401};
-    }
+    validateFields(password, 'password', 'string');
 
     const result = await prisma.user.findMany({
       where: {
@@ -201,7 +168,7 @@ export const resetUserPassword = async (req, res, next) => {
 
     // Handle user data validation
     if (result.length === 0) {
-        throw {message: "Invalid email", statusCode: 401};
+        throw new AppError( USER_ERROR_MESSAGES.INVALID_EMAIL, 401);
     }
 
     // Get user datas
@@ -222,16 +189,10 @@ export const resetUserPassword = async (req, res, next) => {
     });
     
     if(Object.keys(updateData).length === 0){
-      throw {message: "Failed to Reset Password", statusCode: 401};
+      throw new AppError( USER_ERROR_MESSAGES.PASSWORD_RESET_FAILED, 401);
     }
 
     res.status(200).json({
-      message: 'Password Reset successful',
+      message: USER_ERROR_MESSAGES.PASSWORD_RESET_SUCCESSFUL,
     });
-  } catch (error) {
-    const errorRes = new AppError(error.message, error.statusCode || 500);
-    next(errorRes);
-  } 
-};
-
-
+});

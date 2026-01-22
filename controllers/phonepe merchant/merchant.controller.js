@@ -1,6 +1,5 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-// import pool from '../../db/db.js';
 import prisma from '../../config/prismaClient.js'
 import AppError from '../../utils/app.error.js';
 import Environment from '../../constants/merchant.environment.js'
@@ -93,39 +92,6 @@ export const addMerchantAccount = async (req, res, next) => {
     const hashedWebhookPassword = await bcrypt.hash(webhookPassword, saltRounds);
     const hashedClientSecret = await bcrypt.hash(clientSecret, saltRounds);
 
-    // // Insert into DB
-    // const insertQuery = `
-    //   INSERT INTO merchants (
-    //     name,
-    //     callback_url,
-    //     webhook_username,
-    //     webhook_password,
-    //     client_id,
-    //     client_version,
-    //     client_secret,
-    //     merchant_id,
-    //     environment,
-    //     created_by
-    //   )
-    //   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
-    //   RETURNING id
-    // `;
-
-    // const values = [
-    //   name,
-    //   callbackUrl,
-    //   hashedWebhookUsername,
-    //   hashedWebhookPassword,
-    //   clientId,
-    //   clientVersion,
-    //   hashedClientSecret,
-    //   merchantId,
-    //   normalizedEnv,
-    //   createdBy,
-    // ];
-
-    // const result = await pool.query(insertQuery, values);
-
     const merchant = await prisma.merchant.create({
       data: {
         name: name,
@@ -138,10 +104,7 @@ export const addMerchantAccount = async (req, res, next) => {
         merchant_id: merchantId,
         environment: normalizedEnv, // must be Environment enum value
         created_by: createdBy,
-      },
-      // select: {
-      //   id: true,
-      // },
+      }
     });
 
     if(!merchant) throw new AppError(`Failed to Saved Data`,400);

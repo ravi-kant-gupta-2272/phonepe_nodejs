@@ -14,17 +14,17 @@ const port = config.app.port || 3000;
 app.use(cors());
 app.use(express.json());
 
-// ***** user Routes *****
+// ***** user Routes ***** //
 app.use("/api/user", userRouter);
 
-// ***** merchant Routes *****
+// ***** merchant Routes ***** //
 app.use("/api/merchant", merchantRoute);
 
 app.get('/', (req, res) => {
   res.send('Phonepe APIs is running');
 });
 
-// ***** global error handle *****
+// ***** global error handle ***** //
 app.use(globalError);
 
 app.listen(port,'0.0.0.0', () => {
