@@ -1,15 +1,16 @@
-import jwt from 'jsonwebtoken';
+import jwt, { decode } from 'jsonwebtoken';
 import prisma from '../config/prismaClient.js';
 import AppError from '../utils/app.error.js'
+import catchAsync from '../utils/catchAsync.js';
+import {AUTH_ERROR_MESSAGES} from "../utils/app.constant.js"
 
-const authController = async (req, res, next) => {
-  try {
-    // Get token from header
+const authController = catchAsync(async (req, res, next) => {
+  // Get token from header
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return next(
-        new AppError('Access denied. Token missing', 401)
+        new AppError(AUTH_ERROR_MESSAGES.TOKEN_MISSING, 400)
       );
     }
 
@@ -22,32 +23,25 @@ const authController = async (req, res, next) => {
     const currentTime = Math.floor(Date.now() / 1000);
     if (decoded.exp < currentTime) {
         return next(
-            new AppError('Token expired', 401)
+            new AppError(AUTH_ERROR_MESSAGES.TOKEN_EXPIRED, 401)
         );
     }
 
     // Check user exists in DB
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: { id: decoded.id },
       select: {
-        id: true,
-        email: true
+        id: true
       },
     });
 
     if (!user) {
       return next(
-        new AppError('User not found', 401)
+        new AppError(AUTH_ERROR_MESSAGES.INVALID_TOKEN, 401)
       );
     }
 
     next();
-  } catch (error) {
-    return next(
-      new AppError(error.message || 'Authentication failed', 401)
-    );
-  }
-};
+});
 
 export default  authController;
-

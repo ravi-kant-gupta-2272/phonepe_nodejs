@@ -31,24 +31,53 @@ enum Environment {
 }
 
 model Merchant {
-  id               Int          @id @default(autoincrement())
+  id               Int         @id @default(autoincrement())
   name             String
-  callback_url      String
-  webhook_username  String
-  webhook_password  String
-  client_id         String       @unique
-  client_version    Int
-  client_secret     String       @unique
-  merchant_id       String       @unique
+  callback_url     String
+  webhook_username String
+  webhook_password String
+  client_id        String      @unique
+  client_version   Int
+  client_secret    String      @unique
+  merchant_id      String      @unique
   environment      Environment
-  created_by        Int
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  created_by       Int
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  subscriptionPlans SubscriptionPlan[]
 
   @@index([merchant_id])
   @@index([client_id])
-
   @@map("merchant")
 }
 
+enum SubscriptionPlanType {
+  TRIAL
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
 
+model SubscriptionPlan {
+  id               BigInt   @id @default(autoincrement())
+  merchant_id      Int
+  merchant         Merchant @relation(fields: [merchant_id], references: [id], onDelete: Cascade)
+  plan_name        String   @db.VarChar(100)
+  plan_type        SubscriptionPlanType
+  amount           Decimal  @db.Decimal(10, 2)
+  duration_days    Int
+  // TRIAL     → admin sets (e.g. 7, 14)
+  // MONTHLY   → 30
+  // QUARTERLY → 90
+  // YEARLY    → 365
+  billing_cycle_months Int?
+  // MONTHLY = 1, QUARTERLY = 3, YEARLY = 12
+  // NULL for TRIAL
+  is_active        Boolean  @default(true)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  @@index([merchant_id])
+  @@map("subscription_plans")
+}

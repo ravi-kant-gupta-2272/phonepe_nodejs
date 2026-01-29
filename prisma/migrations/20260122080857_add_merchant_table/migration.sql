@@ -1,11 +1,5 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Merchant` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE "Merchant";
+-- CreateEnum
+CREATE TYPE "Environment" AS ENUM ('SANDBOX', 'PRODUCTION');
 
 -- CreateTable
 CREATE TABLE "merchant" (

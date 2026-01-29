@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import prisma from '../../config/prismaClient.js';
 import AppError from '../../utils/app.error.js';
 import validateFields from '../../utils/validator.js'
-import {USER_ERROR_MESSAGES} from '../../utils/app.constant.js'
+import {USER_ERROR_MESSAGES, SUCCESS_MESSAGE} from '../../utils/app.constant.js'
 import catchAsync from '../../utils/catchAsync.js';
 
 // ***** REGISTER USER CONTROLLER ***** //
@@ -46,6 +46,7 @@ export const registerUser = catchAsync(async (req, res) => {
     if(!user) throw new AppError(USER_ERROR_MESSAGES.USER_REGISTRATION_FAILED, 400);
 
     res.status(201).json({
+      status : SUCCESS_MESSAGE.SUCCESS,
       message: USER_ERROR_MESSAGES.USER_REGISTERED_SUCCESSFULLY,
     });
 });
@@ -102,6 +103,7 @@ export const loginUser = catchAsync(async (req, res) => {
     });
 
     res.status(200).json({
+      status: SUCCESS_MESSAGE.SUCCESS,
       message: USER_ERROR_MESSAGES.LOGIN_SUCCESSFUL,
       token,
       user: {
@@ -143,7 +145,7 @@ export const refreshTokenController = catchAsync(async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    return res.status(200).json({ status: USER_ERROR_MESSAGES.TOKEN_REFRESHED, token });
+    return res.status(200).json({ status: SUCCESS_MESSAGE.SUCCESS, status: SUCCESS_MESSAGE.TOKEN_REFRESHED, token });
 
 });
 
@@ -193,6 +195,7 @@ export const resetUserPassword = catchAsync(async (req, res) => {
     }
 
     res.status(200).json({
-      message: USER_ERROR_MESSAGES.PASSWORD_RESET_SUCCESSFUL,
+      status: SUCCESS_MESSAGE.SUCCESS,
+      message: SUCCESS_MESSAGE.PASSWORD_RESET_SUCCESSFUL,
     });
 });
