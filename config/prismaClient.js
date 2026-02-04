@@ -1,13 +1,3 @@
-// import { PrismaPg } from '@prisma/adapter-pg'
-// import { PrismaClient } from '../generated/prisma/client.ts'
-// import dbConfig from './config.js'
-// const connectionString = `${dbConfig.db.db_url}`
-
-// const adapter = new PrismaPg({ connectionString });
-// const prisma = new PrismaClient({ adapter });
-
-// export default prisma;
-
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client.ts';
 import dbConfig from './config.js';
@@ -15,7 +5,7 @@ import { encrypt, decrypt } from '../utils/crypto.js';
 
 const ENCRYPT_FIELDS = [
   'callback_url',
-  'webhook_username', 
+  'webhook_username',
   'webhook_password',
   'client_id',
   'merchant_id',
@@ -25,10 +15,10 @@ const ENCRYPT_FIELDS = [
 const connectionString = `${dbConfig.db.db_url}`;
 const adapter = new PrismaPg({ connectionString });
 
-// 1️⃣ Base client
+// Base client
 const basePrisma = new PrismaClient({ adapter });
 
-// 2️⃣ Extend with encryption logic
+// Extend with encryption logic
 const prisma = basePrisma.$extends({
   query: {
     merchant: {
@@ -54,7 +44,7 @@ const prisma = basePrisma.$extends({
         return query(args);
       },
 
-      // 🔓 Decrypt after read
+      // Decrypt after read
       async findUnique({ args, query }) {
         const result = await query(args);
 

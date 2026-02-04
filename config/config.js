@@ -9,10 +9,12 @@ const dbConfig = {
     db_port: process.env.DB_PORT,
     db_url: process.env.DATABASE_URL
   },
-
   app:{
     port: process.env.PORT
-  }
+  },
+  jwt: process.env.JWT_SECRET,
+  bcrypt_salt_rounds: parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10,
+  encryption_key: process.env.ENCRYPTION_KEY
   
 };
 

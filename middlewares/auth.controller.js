@@ -1,5 +1,6 @@
-import jwt, { decode } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import prisma from '../config/prismaClient.js';
+import config from '../config/config.js';
 import AppError from '../utils/app.error.js'
 import catchAsync from '../utils/catchAsync.js';
 import {AUTH_ERROR_MESSAGES} from "../utils/app.constant.js"
@@ -17,7 +18,7 @@ const authController = catchAsync(async (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     // Verify JWT signature
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, config.jwt);
 
     // Manual expiry check (extra safety)
     const currentTime = Math.floor(Date.now() / 1000);
@@ -29,7 +30,7 @@ const authController = catchAsync(async (req, res, next) => {
 
     // Check user exists in DB
     const user = await prisma.user.findFirst({
-      where: { id: decoded.id },
+      where: { id: decoded.userId },
       select: {
         id: true
       },
@@ -41,6 +42,7 @@ const authController = catchAsync(async (req, res, next) => {
       );
     }
 
+    req.userId = decoded.userId;
     next();
 });
 

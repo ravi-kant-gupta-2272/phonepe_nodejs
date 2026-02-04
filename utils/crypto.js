@@ -1,7 +1,8 @@
 import crypto from 'crypto';
+import config from '../config/config.js';
 
 const ALGORITHM = 'aes-256-gcm';
-const SECRET_KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'hex'); // 32 bytes
+const SECRET_KEY = Buffer.from(config.encryption_key, 'hex');
 const IV_LENGTH = 12;
 
 export function encrypt(text) {

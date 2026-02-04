@@ -1,7 +1,7 @@
 
 
 const globalError = (err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
+    let statusCode = err.statusCode || 500;
 
     if (err.name === 'JsonWebTokenError') {
         statusCode = 400;
@@ -15,7 +15,7 @@ const globalError = (err, req, res, next) => {
 
     res.status(statusCode).json({
         status: err.status || "error",
-        message: err.message,
+        message: err.message || 'Internal Server Error',
     });
 
 };

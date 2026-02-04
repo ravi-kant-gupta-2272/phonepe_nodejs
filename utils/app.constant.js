@@ -19,6 +19,7 @@ export const USER_ERROR_MESSAGES = Object.freeze({
 export const AUTH_ERROR_MESSAGES = Object.freeze({
   TOKEN_MISSING: 'Access denied. Token missing',
   TOKEN_EXPIRED: 'Token expired',
+  REFRESH_TOKEN_EXPIRED: 'Refresh Token expired',
   INVALID_TOKEN: 'Invalid token',
 });
 

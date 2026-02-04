@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+// import bcrypt from 'bcryptjs';
 import prisma from '../../config/prismaClient.js'
 import catchAsync from '../../utils/catchAsync.js';
 import AppError from '../../utils/app.error.js';
@@ -7,7 +7,11 @@ import {Environment} from '../../utils/app.constant.js'
 
 // ***** GET MERCHANT CONTROLLER ***** //
 export const getMerchantAccount = catchAsync(async(req, res) => {
-  const merchants = await prisma.merchant.findMany();
+  const merchants = await prisma.merchant.findMany({
+    where: {
+      created_by: req.userId,
+    },
+  });
 
   res.status(200).json({
     success: true,
@@ -19,7 +23,6 @@ export const getMerchantAccount = catchAsync(async(req, res) => {
 // ***** ADD MERCHANT CONTROLLER ***** //
 export const addMerchantAccount = catchAsync(async (req, res) => {
   
-  // Validate body
   const {
     name,
     callbackUrl,
@@ -70,13 +73,6 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
     );
   }
 
-  // Hash sensitive fields
-  const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS) || 12;
-
-  // const hashedWebhookUsername = await bcrypt.hash(webhookUsername, saltRounds);
-  // const hashedWebhookPassword = await bcrypt.hash(webhookPassword, saltRounds);
-  // const hashedClientSecret = await bcrypt.hash(clientSecret, saltRounds);
-
   const merchant = await prisma.merchant.create({
     data: {
       name: name,
@@ -87,7 +83,7 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
       client_version: clientVersion,
       client_secret: clientSecret,
       merchant_id: merchantId,
-      environment: normalizedEnv, // must be Environment enum value
+      environment: normalizedEnv,
       created_by: createdBy,
     }
   });
@@ -96,7 +92,11 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
   
   return res.status(201).json({
     status: 'success',
-    data: merchant,
+    data: {
+      id: merchant.id,
+      createdAt: merchant.createdAt,
+      updatedAt: merchant.updatedAt,
+    },
   });
 });
 
@@ -111,7 +111,11 @@ export const updateMerchantAccount = catchAsync(async(req, res) => {
 
   res.status(200).json({
     success: true,
-    data: merchant,
+    data: {
+      id: merchant.id,
+      createdAt: merchant.createdAt,
+      updatedAt: merchant.updatedAt,
+    },
   });
 })
 
