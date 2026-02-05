@@ -1,23 +1,36 @@
 import express from 'express';
 import {
-  registerUser,
-  loginUser,
-  resetUserPassword,
-  refreshTokenController
+  registerUserController,
+  loginUserController,
+  resetUserPasswordController,
+  refreshTokenController,
+  resetPasswordLinkController,
+  registerLinkController,
+  tokenExpireStatusController
 } from '../controllers/user/user.controller.js';
+import {jwtExpireMiddleware} from '../middlewares/jwt.expire.middleware.js';
 
 const userRouter = express.Router();
 
 // Register user route
-userRouter.post('/register', registerUser);
+userRouter.post('/register', jwtExpireMiddleware, registerUserController);
 
 // Login user route
-userRouter.post('/login', loginUser);
+userRouter.post('/login', loginUserController);
 
 // Reset Password route
-userRouter.post('/reset', resetUserPassword);
+userRouter.post('/reset', jwtExpireMiddleware, resetUserPasswordController);
 
 // Refresh token route
-userRouter.post('/refresh/token', refreshTokenController);
+userRouter.post('/refresh-token', refreshTokenController);
+
+// reset Password route
+userRouter.post('/reset-link', resetPasswordLinkController);
+
+// register link route
+userRouter.post('/register-link', registerLinkController);
+
+// Reset Password route
+userRouter.get('/token-status', jwtExpireMiddleware, tokenExpireStatusController);
 
 export default userRouter;

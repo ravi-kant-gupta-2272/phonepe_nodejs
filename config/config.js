@@ -12,10 +12,15 @@ const dbConfig = {
   app:{
     port: process.env.PORT
   },
-  jwt: process.env.JWT_SECRET,
+  smtp:{
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
+  },
+  jwt: process.env.JWT_SECRET || "JWT_SECRET",
   bcrypt_salt_rounds: parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10,
   encryption_key: process.env.ENCRYPTION_KEY
-  
 };
 
 export default dbConfig;

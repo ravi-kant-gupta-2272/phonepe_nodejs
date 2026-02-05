@@ -14,13 +14,16 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(100)
-  password   String    @db.VarChar(255)
-  email      String    @unique @db.VarChar(150)
-  is_Login   Boolean   @default(false)
-  updated_at DateTime?
-  created_at DateTime  @default(now())
+  id               Int       @id @default(autoincrement())
+  name             String    @db.VarChar(100)
+  password         String    @db.VarChar(255)
+  email            String    @unique @db.VarChar(150)
+  is_login         Boolean   @default(false)
+  refresh_token_id String?   @db.VarChar(255)
+  // refresh_token_id String?   @db.VarChar(255)
+  // refresh_token_id String?   @db.VarChar(255)
+  updated_at       DateTime?
+  created_at       DateTime  @default(now())
 
   @@map("users")
 }
@@ -60,13 +63,13 @@ enum SubscriptionPlanType {
 }
 
 model SubscriptionPlan {
-  id               BigInt   @id @default(autoincrement())
-  merchant_id      Int
-  merchant         Merchant @relation(fields: [merchant_id], references: [id], onDelete: Cascade)
-  plan_name        String   @db.VarChar(100)
-  plan_type        SubscriptionPlanType
-  amount           Decimal  @db.Decimal(10, 2)
-  duration_days    Int
+  id                   BigInt               @id @default(autoincrement())
+  merchant_id          Int
+  merchant             Merchant             @relation(fields: [merchant_id], references: [id], onDelete: Cascade)
+  plan_name            String               @db.VarChar(100)
+  plan_type            SubscriptionPlanType
+  amount               Decimal              @db.Decimal(10, 2)
+  duration_days        Int
   // TRIAL     → admin sets (e.g. 7, 14)
   // MONTHLY   → 30
   // QUARTERLY → 90
@@ -74,9 +77,9 @@ model SubscriptionPlan {
   billing_cycle_months Int?
   // MONTHLY = 1, QUARTERLY = 3, YEARLY = 12
   // NULL for TRIAL
-  is_active        Boolean  @default(true)
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+  is_active            Boolean              @default(true)
+  created_at           DateTime             @default(now())
+  updated_at           DateTime             @updatedAt
 
   @@index([merchant_id])
   @@map("subscription_plans")

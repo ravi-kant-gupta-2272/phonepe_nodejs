@@ -1,6 +1,4 @@
 import express from 'express';
-import fs from 'fs';
-import path from 'path';
 import cors from 'cors';
 import morgan from 'morgan';
 import config from './config/config.js';
