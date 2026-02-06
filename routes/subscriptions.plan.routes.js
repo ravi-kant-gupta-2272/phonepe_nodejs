@@ -16,7 +16,7 @@ subscriptionsPlanRouter.post('/create', authController, createSubscriptionPlan);
 subscriptionsPlanRouter.get('/get/:merchantId', authController, getPlansByMerchant);
 
 // Route to Update subscription plans
-subscriptionsPlanRouter.post('/update', authController, updateSubscriptionPlan);
+subscriptionsPlanRouter.put('/update', authController, updateSubscriptionPlan);
 
 // Route to Delete subscription plans
 subscriptionsPlanRouter.delete('/delete/:id', authController, deleteSubscriptionPlan);

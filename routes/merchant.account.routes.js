@@ -11,9 +11,9 @@ merchantRoute.get('/get',authController, getMerchantAccount);
 merchantRoute.post('/create',authController, addMerchantAccount);
 
 // merchant route to Update Merchant accounts
-merchantRoute.post('/update/:id',authController, updateMerchantAccount);
+merchantRoute.put('/update/:id',authController, updateMerchantAccount);
 
 // merchant route to Delete Merchant accounts
-merchantRoute.post('/delete/:id',authController, deleteMerchantAccount);
+merchantRoute.delete('/delete/:id',authController, deleteMerchantAccount);
 
 export default merchantRoute;
