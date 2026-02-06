@@ -71,7 +71,7 @@ export const registerUserController = catchAsync(async (req, res) => {
   });
 
   if (existingUser) {
-    throw new AppError(USER_ERROR_MESSAGES.EMAIL_ALREADY_EXISTS, 400);
+    throw new AppError(USER_ERROR_MESSAGES.EMAIL_ALREADY_EXISTS, 409);
   }
 
   // Hash password
@@ -90,7 +90,7 @@ export const registerUserController = catchAsync(async (req, res) => {
     }
   });
 
-  if (!user) throw new AppError(USER_ERROR_MESSAGES.USER_REGISTRATION_FAILED, 400);
+  if (!user) throw new AppError(USER_ERROR_MESSAGES.USER_REGISTRATION_FAILED, 500);
 
   res.status(201).json({
     status : SUCCESS_MESSAGE.SUCCESS,
@@ -166,7 +166,7 @@ export const loginUserController = catchAsync(async (req, res) => {
   });
 
   if(Object.keys(result).length === 0){
-    throw new AppError(USER_ERROR_MESSAGES.LOGIN_FAILED, 401);
+    throw new AppError(USER_ERROR_MESSAGES.LOGIN_FAILED, 500);
   }
 
   res.status(200).json({
@@ -247,7 +247,7 @@ export const refreshTokenController = catchAsync(async (req, res) => {
   });
 
   if (Object.keys(result).length === 0) {
-    throw new AppError(AUTH_ERROR_MESSAGES.REFRESH_TOKEN_UPDATE_FAILED, 401);
+    throw new AppError(AUTH_ERROR_MESSAGES.REFRESH_TOKEN_UPDATE_FAILED, 500);
   }
 
   return res.status(200).json({
@@ -259,7 +259,7 @@ export const refreshTokenController = catchAsync(async (req, res) => {
 });
 
 // ***** RESET USER PASWORD CONTROLLER ***** //
-export const resetUserPasswordController = catchAsync(async (req, res, next) => {
+export const resetUserPasswordController = catchAsync(async (req, res) => {
   const token = req.headers['authorization']?.split(' ')[1] || req.body.token;
 
   const { password } = req.body;
@@ -276,9 +276,7 @@ export const resetUserPasswordController = catchAsync(async (req, res, next) => 
   // Manual expiry check (extra safety)
   const currentTime = Math.floor(Date.now() / 1000);
   if (decoded.exp < currentTime) {
-      return next(
-          new AppError(AUTH_ERROR_MESSAGES.TOKEN_EXPIRED, 401)
-      );
+      throw new AppError(AUTH_ERROR_MESSAGES.TOKEN_EXPIRED, 401);
   }
 
   const result = await prisma.user.findMany({
@@ -292,7 +290,7 @@ export const resetUserPasswordController = catchAsync(async (req, res, next) => 
 
   // Handle user data validation
   if (result.length === 0) {
-    throw new AppError(USER_ERROR_MESSAGES.INVALID_EMAIL, 401);
+    throw new AppError(USER_ERROR_MESSAGES.INVALID_EMAIL, 404);
   }
 
   // Get user datas
@@ -313,7 +311,7 @@ export const resetUserPasswordController = catchAsync(async (req, res, next) => 
   });
 
   if (Object.keys(updateData).length === 0) {
-    throw new AppError(USER_ERROR_MESSAGES.PASSWORD_RESET_FAILED, 401);
+    throw new AppError(USER_ERROR_MESSAGES.PASSWORD_RESET_FAILED, 500);
   }
 
   res.status(200).json({
@@ -368,7 +366,7 @@ export const resetPasswordLinkController = catchAsync(async (req, res) => {
 });
 
 // ***** VALID JWT TOKEN CONTROLLER ***** //
-export const tokenExpireStatusController = catchAsync(async (req, res, next) => {
+export const tokenExpireStatusController = catchAsync(async (req, res) => {
   res.status(200).json({
     status: SUCCESS_MESSAGE.SUCCESS,
     message: 'Token is valid'

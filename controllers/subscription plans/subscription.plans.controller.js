@@ -183,7 +183,7 @@ export const deleteSubscriptionPlan = catchAsync(async (req, res, next) => {
   });
 
   if(Object.keys(result).length === 0) {
-    throw new AppError(SUBSCRIPTIONS_ERROR_MESSAGES.FAILED_TO_DELETE_SUBSCRIPTION, 404);
+    throw new AppError(SUBSCRIPTIONS_ERROR_MESSAGES.FAILED_TO_DELETE_SUBSCRIPTION, 500);
   }
 
   res.status(200).json({

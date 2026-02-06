@@ -93,7 +93,7 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
     },
   });
 
-  if(!merchant) throw new AppError(`Failed to Saved Data`,400);
+  if(!merchant) throw new AppError(MERCHANT_ERROR_MESSAGES.FAILED_TO_SAVE,500);
   
   return res.status(201).json({
     status: 'success',
@@ -207,7 +207,7 @@ export const deleteMerchantAccount = catchAsync(async(req, res) => {
   });
 
   if(Object.keys(result).length === 0) {
-    throw new AppError(MERCHANT_ERROR_MESSAGES.MERCHANT_NOT_FOUND, 404);
+    throw new AppError(MERCHANT_ERROR_MESSAGES.MERCHANT_NOT_FOUND, 500);
   }
 
   res.status(200).json({
