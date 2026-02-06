@@ -6,6 +6,7 @@ import catchAsync from '../utils/catchAsync.js';
 import {AUTH_ERROR_MESSAGES} from "../utils/app.constant.js"
 
 const authController = catchAsync(async (req, res, next) => {
+  console.log("=-=-=-=-=-=-=-=-=1111")
   // Get token from header
     const authHeader = req.headers.authorization;
 
