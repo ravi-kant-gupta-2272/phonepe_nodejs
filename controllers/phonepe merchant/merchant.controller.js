@@ -3,7 +3,7 @@ import prisma from '../../config/prismaClient.js'
 import catchAsync from '../../utils/catchAsync.js';
 import AppError from '../../utils/app.error.js';
 import validateFields from '../../utils/validator.js';
-import {Environment, MERCHANT_ERROR_MESSAGES} from '../../utils/app.constant.js'
+import {Environment, MERCHANT_ERROR_MESSAGES, SUCCESS_MESSAGE} from '../../utils/app.constant.js'
 
 // ***** GET MERCHANT CONTROLLER ***** //
 export const getMerchantAccount = catchAsync(async(req, res) => {
