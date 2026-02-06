@@ -1,4 +1,3 @@
-// import bcrypt from 'bcryptjs';
 import prisma from '../../config/prismaClient.js'
 import catchAsync from '../../utils/catchAsync.js';
 import AppError from '../../utils/app.error.js';
