@@ -15,7 +15,8 @@ export const USER_ERROR_MESSAGES = Object.freeze({
   INVALID_EMAIL: 'Invalid email',
   PASSWORD_RESET_FAILED: 'Failed to reset password',
   JSON_WEB_TOKEN_ERROR: 'JsonWebTokenError',
-  TOKEN_EXPIRE_ERROR: 'TokenExpiredError'
+  TOKEN_EXPIRE_ERROR: 'TokenExpiredError',
+  INVALID_PRISMA_QUERY: 'Invalid Prisma query'
 });
 
 export const AUTH_ERROR_MESSAGES = Object.freeze({
@@ -43,6 +44,13 @@ export const SUCCESS_MESSAGE = Object.freeze({
 export const MERCHANT_ERROR_MESSAGES = Object.freeze({
   INVALID_CALLBACKURL: "callbackUrl is not a valid URL",
   MERCHANT_NOT_FOUND: "Merchant is not found",
+  ENVIRONMENT_INVALID: "environment must be one of: SANDBOX, PRODUCTION"
+});
+
+export const SUBSCRIPTIONS_ERROR_MESSAGES = Object.freeze({
+  INVALID_CALLBACKURL: "callbackUrl is not a valid URL",
   ENVIRONMENT_INVALID: "environment must be one of: SANDBOX, PRODUCTION",
-  MERCHANT_NOT_FOUND: "Merchant not found",
+  SUBSCRIPTIONS_CREATION_FAILED: 'Failed to create subscription plan',
+  SUBSCRIPTIONS_NOT_FOUND: 'Subscription plan not found',
+  FAILED_TO_DELETE_SUBSCRIPTION: 'Failed to delete subscription plan'
 });

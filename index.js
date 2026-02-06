@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import config from './config/config.js';
 import userRouter from './routes/user.routes.js';
 import merchantRoute from './routes/merchant.account.routes.js'
+import subscriptionsPlanRouter from './routes/subscriptions.plan.routes.js';
 import globalError from './utils/global.error.js';
 import pool from "./db/db.js";
 
@@ -29,6 +30,9 @@ app.use("/api/user", userRouter);
 
 // ***** merchant Routes ***** //
 app.use("/api/merchant", merchantRoute);
+
+// ***** Subscriptions Routes ***** //
+app.use("/api/subscriptions", subscriptionsPlanRouter);
 
 app.get('/', (req, res) => {
   res.send('Phonepe APIs is running');

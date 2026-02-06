@@ -13,7 +13,7 @@ import {jwtExpireMiddleware} from '../middlewares/jwt.expire.middleware.js';
 const userRouter = express.Router();
 
 // Register user route
-userRouter.post('/register', jwtExpireMiddleware, registerUserController);
+userRouter.post('/register', registerUserController);
 
 // Login user route
 userRouter.post('/login', loginUserController);

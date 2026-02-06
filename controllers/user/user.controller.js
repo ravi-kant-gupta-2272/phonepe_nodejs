@@ -30,8 +30,8 @@ export const registerLinkController = catchAsync(async (req, res) => {
       const html = `
         <h4>Hello User</h4>
         <p>Click the link below to complete your registration.</p>
-        <a href="http://localhost:5173/register?token=${resetToken}&email=${email}">
-          http://localhost:5173/register?token=${resetToken}&email=${email}
+        <a href="http://localhost:5173/register?token=${resetToken}">
+          http://localhost:5173/register?token=${resetToken}
         </a>
       `;
 

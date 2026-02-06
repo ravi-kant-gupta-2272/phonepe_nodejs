@@ -16,17 +16,8 @@ const authController = catchAsync(async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-
     // Verify JWT signature
     const decoded = jwt.verify(token, config.jwt);
-
-    // Manual expiry check (extra safety)
-    const currentTime = Math.floor(Date.now() / 1000);
-    if (decoded.exp < currentTime) {
-        return next(
-            new AppError(AUTH_ERROR_MESSAGES.TOKEN_EXPIRED, 401)
-        );
-    }
 
     // Check user exists in DB
     const user = await prisma.user.findFirst({
@@ -35,13 +26,11 @@ const authController = catchAsync(async (req, res, next) => {
         id: true
       },
     });
-
     if (!user) {
       return next(
         new AppError(AUTH_ERROR_MESSAGES.INVALID_TOKEN, 401)
       );
     }
-
     req.userId = decoded.userId;
     next();
 });
