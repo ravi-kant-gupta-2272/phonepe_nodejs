@@ -1,5 +1,6 @@
 import { Prisma } from '../generated/prisma/client.ts';
 import { USER_ERROR_MESSAGES, AUTH_ERROR_MESSAGES} from './app.constant.js';
+import logger from './logger.js';
 
 
 function extractPrismaArgumentError(message) {
@@ -14,6 +15,9 @@ function extractPrismaArgumentError(message) {
 }
 
 const globalError = (err, req, res, next) => {
+    
+    logger.error(err.message, { stack: err.stack });
+
     let statusCode = err.statusCode || 500;
 
     if (err.name === USER_ERROR_MESSAGES.JSON_WEB_TOKEN_ERROR) {

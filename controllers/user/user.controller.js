@@ -170,7 +170,7 @@ export const loginUserController = catchAsync(async (req, res) => {
   }
 
   res.status(200).json({
-    message: USER_ERROR_MESSAGES.LOGIN_SUCCESSFUL,
+    status: SUCCESS_MESSAGE.SUCCESS,
     accessToken,
     refreshToken,
     user: {

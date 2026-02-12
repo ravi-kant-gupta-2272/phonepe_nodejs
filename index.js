@@ -7,6 +7,8 @@ import merchantRoute from './routes/merchant.account.routes.js'
 import subscriptionsPlanRouter from './routes/subscriptions.plan.routes.js';
 import globalError from './utils/global.error.js';
 import pool from "./db/db.js";
+import logger from './utils/logger.js';
+import requestLogger from './middlewares/requestLogger.js';
 
 
 const app = express();
@@ -23,6 +25,7 @@ app.use(cors());
 app.use(morgan('dev'));
 // app.use(morgan('combined', { stream: accessLogStream }));
 app.use(express.json());
+app.use(requestLogger);
 // console.log('Log file will be created at:', path.join(__dirname, 'project.log'));
 
 // ***** user Routes ***** //
