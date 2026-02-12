@@ -27,13 +27,20 @@ const globalError = (err, req, res, next) => {
     }
 
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        
         switch (err.code) {
             case 'P2002':
                 err.message = `Duplicate value for ${err.meta?.target}`;
+                break;
             case 'P2025':
                 err.message = 'Record not found';
+                break;
             case 'P2003':
                 err.message = 'Foreign key constraint failed';
+                break;
+            case 'ECONNREFUSED':
+                err.message = 'Failed to get Data.';
+                break;
             default:
                 throw err;
         }

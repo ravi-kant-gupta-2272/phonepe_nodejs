@@ -41,7 +41,7 @@ export const registerLinkController = catchAsync(async (req, res) => {
         subject,
         html,
       });
-      console.log('Email sent successfully');
+      // console.log('Email sent successfully');
     } catch (error) {
       console.error('SMTP Error:', error.message);
     }
@@ -353,7 +353,7 @@ export const resetPasswordLinkController = catchAsync(async (req, res) => {
         html,
       });
 
-      console.log('Email sent successfully');
+      // console.log('Email sent successfully');
     } catch (error) {
       console.error('SMTP Error:', error.message);
     }

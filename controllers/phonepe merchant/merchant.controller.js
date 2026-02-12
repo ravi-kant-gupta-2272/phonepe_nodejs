@@ -6,9 +6,13 @@ import {Environment, MERCHANT_ERROR_MESSAGES, SUCCESS_MESSAGE} from '../../utils
 
 // ***** GET MERCHANT CONTROLLER ***** //
 export const getMerchantAccount = catchAsync(async(req, res) => {
+  const userId =req.userId;
+
+  if(userId) throw new AppError(MERCHANT_ERROR_MESSAGES.MERCHANT_NOT_FOUND, 400);
+
   const merchants = await prisma.merchant.findMany({
     where: {
-      created_by: req.userId,
+      created_by: userId,
     },
   });
 
@@ -106,7 +110,7 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
 
 // ***** UPDATE MERCHANT CONTROLLER ***** //
 export const updateMerchantAccount = catchAsync(async(req, res) => {
-  console.log("-=-=-=-=-=-=-")
+  // console.log("-=-=-=-=-=-=-")
   const { id } = req.params;
   const idNumber = Number(id);
 

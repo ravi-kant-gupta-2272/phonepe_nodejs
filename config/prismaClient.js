@@ -29,7 +29,7 @@ const prisma = basePrisma.$extends({
           ENCRYPT_FIELDS.forEach(field => {
           if (args.data?.[field]) {
             args.data[field] = encrypt(args.data[field]);
-            console.log(args.data[field]);
+            // console.log(args.data[field]);
           }
         });
 

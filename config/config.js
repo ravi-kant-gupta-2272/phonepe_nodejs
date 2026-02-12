@@ -20,7 +20,8 @@ const dbConfig = {
   },
   jwt: process.env.JWT_SECRET || "JWT_SECRET",
   bcrypt_salt_rounds: parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10,
-  encryption_key: process.env.ENCRYPTION_KEY
+  encryption_key: process.env.ENCRYPTION_KEY,
+  base_url: process.env.DEV_BASE_URL
 };
 
 export default dbConfig;
