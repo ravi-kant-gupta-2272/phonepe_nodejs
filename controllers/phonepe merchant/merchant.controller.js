@@ -106,7 +106,6 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
 
 // ***** UPDATE MERCHANT CONTROLLER ***** //
 export const updateMerchantAccount = catchAsync(async(req, res) => {
-  console.log("-=-=-=-=-=-=-")
   const { id } = req.params;
   const idNumber = Number(id);
 

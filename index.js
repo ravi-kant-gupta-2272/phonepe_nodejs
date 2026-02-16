@@ -7,8 +7,7 @@ import merchantRoute from './routes/merchant.account.routes.js'
 import subscriptionsPlanRouter from './routes/subscriptions.plan.routes.js';
 import globalError from './utils/global.error.js';
 import pool from "./db/db.js";
-import logger from './utils/logger.js';
-import requestLogger from './middlewares/requestLogger.js';
+
 
 
 const app = express();
@@ -17,16 +16,9 @@ const port = config.app.port || 3000;
 
 app.use(cors());
 
-// const accessLogStream = fs.createWriteStream(
-//   path.join(__dirname, 'project.log'),
-//   { flags: 'a' } // append mode
-// );
-
 app.use(morgan('dev'));
-// app.use(morgan('combined', { stream: accessLogStream }));
+
 app.use(express.json());
-app.use(requestLogger);
-// console.log('Log file will be created at:', path.join(__dirname, 'project.log'));
 
 // ***** user Routes ***** //
 app.use("/api/user", userRouter);
@@ -36,10 +28,6 @@ app.use("/api/merchant", merchantRoute);
 
 // ***** Subscriptions Routes ***** //
 app.use("/api/subscriptions", subscriptionsPlanRouter);
-
-app.get('/', (req, res) => {
-  res.send('Phonepe APIs is running');
-});
 
 // ***** global error handle ***** //
 app.use(globalError);

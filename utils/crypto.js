@@ -24,13 +24,12 @@ export function decrypt(encryptedText) {
 
   const parts = encryptedText.split(':');
   if (parts.length !== 3) {
-    // Not encrypted by our system
     return encryptedText;
   }
 
   const [ivHex, authTagHex, encrypted] = parts;
 
-  if (ivHex.length !== 24) { // 12 bytes = 24 hex chars
+  if (ivHex.length !== 24) {
     throw new Error('Invalid IV length');
   }
 
