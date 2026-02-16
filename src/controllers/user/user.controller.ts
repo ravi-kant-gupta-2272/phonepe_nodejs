@@ -337,6 +337,19 @@ export const resetPasswordLinkController = catchAsync(async (req, res) => {
   // Handle email validation
   // validateFields(email, 'email', 'string');
 
+  const user = await prisma.user.findUnique({
+     where: {
+      email: email,
+    },
+    select: {
+      id: true,
+    },
+  }) ?? {};
+
+  if(Object.keys(user).length === 0){
+    throw new AppError(USER_ERROR_MESSAGES.WRONG_EMAIL_ID, 401);
+  }
+
   const resetToken = jwt.sign(
     {email: email},
     config.jwt,

@@ -4,31 +4,31 @@ import logger from "../utils/logger.js";
 const requestLogger = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
 
-  res.on("finish", () => {
-    const duration = Date.now() - start;
+//   res.on("finish", () => {
+//     const duration = Date.now() - start;
 
-    let requestBody = req.body;
+//     let requestBody = req.body;
 
-    if (requestBody && typeof requestBody === "object") {
-      requestBody = { ...requestBody };
+//     if (requestBody && typeof requestBody === "object") {
+//       requestBody = { ...requestBody };
 
-      if (requestBody.password) {
-        requestBody.password = "****";
-      }
-    }
+//       if (requestBody.password) {
+//         requestBody.password = "****";
+//       }
+//     }
 
-    logger.info("HTTP Request", {
-      method: req.method,
-      url: req.originalUrl,
-      status: res.statusCode,
-      duration: `${duration}ms`,
-      requestBody: requestBody,
-      responseBody: res.send,
-      ip: req.ip,
-    });
-  });
+//     logger.info("HTTP Request", {
+//       method: req.method,
+//       url: req.originalUrl,
+//       status: res.statusCode,
+//       duration: `${duration}ms`,
+//       requestBody: requestBody,
+//       responseBody: res.send,
+//       ip: req.ip,
+//     });
+//   });
 
-  next();
-};
+//   next();
+// };
 
-export default requestLogger;
+// export default requestLogger;
