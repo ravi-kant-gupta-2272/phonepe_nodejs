@@ -33,7 +33,6 @@ export const getMerchantAccount = catchAsync(async (req, res) => {
 
 // ***** ADD MERCHANT CONTROLLER ***** //
 export const addMerchantAccount = catchAsync(async (req, res) => {
-  
   const {
     name,
     callbackUrl,
@@ -44,11 +43,12 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
     clientSecret,
     environment,
     merchantId,
-    createdBy
+    // createdBy
   } = req.body || {};
-
+  console.log("req.userID ----- ->    ", req.userId);
+  const createdBy = req.userId;
   // Validate callbackUrl
-  validateFields(createdBy, "createdBy", 'number');
+  validateFields(createdBy, "createdBy", "number");
 
   // Validate callbackUrl
   // validateFields(clientVersion, "clientVersion", 'number');
@@ -58,7 +58,7 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
   } catch {
     throw new AppError(MERCHANT_ERROR_MESSAGES.INVALID_CALLBACKURL, 400);
   }
-  
+
   const requiredStrings = {
     name,
     callbackUrl,
@@ -67,20 +67,20 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
     clientId,
     clientSecret,
     environment,
-    merchantId
+    merchantId,
   };
-  
+
   for (const [key, val] of Object.entries(requiredStrings)) {
-    validateFields(val, key, 'string');
+    validateFields(val, key, "string");
   }
 
   const allowedEnvs = Object.values(Environment);
   const normalizedEnv = environment.toUpperCase();
-  
+
   if (!allowedEnvs.includes(normalizedEnv)) {
     throw new AppError(
-      `environment must be one of: ${allowedEnvs.join(', ')}`,
-      400
+      `environment must be one of: ${allowedEnvs.join(", ")}`,
+      400,
     );
   }
 
@@ -107,7 +107,7 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
   if(!merchant) throw new AppError(MERCHANT_ERROR_MESSAGES.FAILED_TO_SAVE,500);
   
   return res.status(201).json({
-    status: 'success',
+    status: "success",
     data: {
       id: merchant.id,
       createdAt: merchant.createdAt,
@@ -117,12 +117,14 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
 });
 
 // ***** UPDATE MERCHANT CONTROLLER ***** //
+
 export const updateMerchantAccount = catchAsync(async(req, res) => {
+
   const { id } = req.params;
   const idNumber = Number(id);
 
   //Validate id
-  validateFields(idNumber, "id", 'number');
+  validateFields(idNumber, "id", "number");
 
   const {
     name,
@@ -134,21 +136,21 @@ export const updateMerchantAccount = catchAsync(async(req, res) => {
     clientSecret,
     environment,
     merchantId,
-    createdBy
+    // createdBy,
   } = req.body || {};
 
   // Validate callbackUrl
-  validateFields(createdBy, "createdBy", 'number');
+  // validateFields(createdBy, "createdBy", "number");
 
   // Validate callbackUrl
-  validateFields(clientVersion, "clientVersion", 'number');
+  validateFields(clientVersion, "clientVersion", "number");
 
   try {
     new URL(callbackUrl);
   } catch {
     throw new AppError(MERCHANT_ERROR_MESSAGES.INVALID_CALLBACKURL, 400);
   }
-  
+
   const requiredStrings = {
     name,
     callbackUrl,
@@ -157,25 +159,22 @@ export const updateMerchantAccount = catchAsync(async(req, res) => {
     clientId,
     clientSecret,
     environment,
-    merchantId
+    merchantId,
   };
-  
+
   for (const [key, val] of Object.entries(requiredStrings)) {
-    validateFields(val, key, 'string');
+    validateFields(val, key, "string");
   }
 
   const allowedEnvs = Object.values(Environment);
   const normalizedEnv = environment.toUpperCase();
-  
+
   if (!allowedEnvs.includes(normalizedEnv)) {
-    throw new AppError(
-      MERCHANT_ERROR_MESSAGES.ENVIRONMENT_INVALID,
-      400
-    );
+    throw new AppError(MERCHANT_ERROR_MESSAGES.ENVIRONMENT_INVALID, 400);
   }
 
   const merchant = await prisma.merchant.update({
-    where: { id:  idNumber},
+    where: { id: idNumber },
     data: {
       name: name,
       callback_url: callbackUrl,
@@ -186,11 +185,11 @@ export const updateMerchantAccount = catchAsync(async(req, res) => {
       client_secret: clientSecret,
       merchant_id: merchantId,
       environment: normalizedEnv,
-      created_by: createdBy
+      // created_by: createdBy,
     },
   });
 
-  if(Object.keys(merchant).length === 0) {
+  if (Object.keys(merchant).length === 0) {
     throw new AppError(MERCHANT_ERROR_MESSAGES.MERCHANT_NOT_FOUND, 404);
   }
 
@@ -202,16 +201,16 @@ export const updateMerchantAccount = catchAsync(async(req, res) => {
       updatedAt: merchant.updatedAt,
     },
   });
-})
+});
 
 // ***** DELETE MERCHANT CONTROLLER ***** //
-export const deleteMerchantAccount = catchAsync(async(req, res) => {
+export const deleteMerchantAccount = catchAsync(async (req, res) => {
   const { id } = req.params;
-  
+
   const idNumber = Number(id);
 
   //Validate id
-  validateFields(idNumber, "id", 'number');
+  validateFields(idNumber, "id", "number");
 
   const result = await prisma.merchant.delete({
     where: { id: idNumber },
@@ -225,5 +224,4 @@ export const deleteMerchantAccount = catchAsync(async(req, res) => {
     success: true,
     message: SUCCESS_MESSAGE.MERCHANT_DELETED_SUCCESSFULLY,
   });
-})
-
+});

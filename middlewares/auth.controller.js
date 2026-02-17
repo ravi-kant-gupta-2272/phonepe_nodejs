@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
-import prisma from '../config/prismaClient.js';
-import config from '../config/config.js';
-import AppError from '../utils/app.error.js'
-import catchAsync from '../utils/catchAsync.js';
-import {AUTH_ERROR_MESSAGES} from "../utils/app.constant.js"
+import jwt from "jsonwebtoken";
+import prisma from "../config/prismaClient.js";
+import config from "../config/config.js";
+import AppError from "../utils/app.error.js";
+import catchAsync from "../utils/catchAsync.js";
+import { AUTH_ERROR_MESSAGES } from "../utils/app.constant.js";
 
 const authController = catchAsync(async (req, res, next) => {
   
@@ -33,4 +33,4 @@ const authController = catchAsync(async (req, res, next) => {
   next();
 });
 
-export default  authController;
+export default authController;
