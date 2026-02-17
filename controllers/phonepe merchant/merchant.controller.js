@@ -5,8 +5,19 @@ import validateFields from '../../utils/validator.js';
 import {Environment, MERCHANT_ERROR_MESSAGES, SUCCESS_MESSAGE} from '../../utils/app.constant.js'
 
 // ***** GET MERCHANT CONTROLLER ***** //
-export const getMerchantAccount = catchAsync(async(req, res) => {
+export const getMerchantAccount = catchAsync(async (req, res) => {
+  const limit = parseInt(req.query.limit) || 5;
+  const skip = parseInt(req.query.skip) || 0;
+
   const merchants = await prisma.merchant.findMany({
+    where: {
+      created_by: req.userId,
+    },
+    take: limit,
+    skip: skip,
+  });
+
+  const total = await prisma.merchant.count({
     where: {
       created_by: req.userId,
     },
@@ -14,10 +25,11 @@ export const getMerchantAccount = catchAsync(async(req, res) => {
 
   res.status(200).json({
     success: true,
-    count: merchants.length || 0,
-    data: merchants || [],
+    count: total,
+    data: merchants,
   });
-})
+});
+
 
 // ***** ADD MERCHANT CONTROLLER ***** //
 export const addMerchantAccount = catchAsync(async (req, res) => {
