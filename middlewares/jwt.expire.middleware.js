@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import config from '../config/config.js';
 import catchAsync from "../utils/catchAsync.js";
 
-export const jwtExpireMiddleware = catchAsync(async (req, res, next) => {
+export const jwtExpireMiddleware = catchAsync(async (req, res) => {
 
     const marginTime = 60;
 
@@ -14,12 +14,10 @@ export const jwtExpireMiddleware = catchAsync(async (req, res, next) => {
     // Expiry check with margin time
     const currentTime = Math.floor(Date.now() / 1000);
 
-    const adjustedTime = currentTime - marginTime; // Subtract margin time from current time
+    const adjustedTime = currentTime - marginTime;
 
     if (decoded.exp < adjustedTime) {
-        return next(
-            new AppError(AUTH_ERROR_MESSAGES.TOKEN_EXPIRED, 401)
-        );
+        throw new AppError(AUTH_ERROR_MESSAGES.TOKEN_EXPIRED, 401);
     }
 
     next();

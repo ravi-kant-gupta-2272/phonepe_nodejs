@@ -95,7 +95,7 @@ export const registerUserController = catchAsync(async (req, res) => {
   }
 
   if (existingUser) {
-    throw new AppError(USER_ERROR_MESSAGES.EMAIL_ALREADY_EXISTS, 400);
+    throw new AppError(USER_ERROR_MESSAGES.EMAIL_ALREADY_EXISTS, 409);
   }
 
   // Hash password
@@ -114,8 +114,7 @@ export const registerUserController = catchAsync(async (req, res) => {
     },
   });
 
-  if (!user)
-    throw new AppError(USER_ERROR_MESSAGES.USER_REGISTRATION_FAILED, 400);
+  if (!user) throw new AppError(USER_ERROR_MESSAGES.USER_REGISTRATION_FAILED, 500);
 
   res.status(201).json({
     status: SUCCESS_MESSAGE.SUCCESS,
@@ -190,12 +189,12 @@ export const loginUserController = catchAsync(async (req, res) => {
     },
   });
 
-  if (Object.keys(result).length === 0) {
-    throw new AppError(USER_ERROR_MESSAGES.LOGIN_FAILED, 401);
+  if(Object.keys(result).length === 0){
+    throw new AppError(USER_ERROR_MESSAGES.LOGIN_FAILED, 500);
   }
 
   res.status(200).json({
-    message: USER_ERROR_MESSAGES.LOGIN_SUCCESSFUL,
+    status: SUCCESS_MESSAGE.SUCCESS,
     accessToken,
     refreshToken,
     user: {
@@ -273,7 +272,7 @@ export const refreshTokenController = catchAsync(async (req, res) => {
   });
 
   if (Object.keys(result).length === 0) {
-    throw new AppError(AUTH_ERROR_MESSAGES.REFRESH_TOKEN_UPDATE_FAILED, 401);
+    throw new AppError(AUTH_ERROR_MESSAGES.REFRESH_TOKEN_UPDATE_FAILED, 500);
   }
 
   return res.status(200).json({
@@ -285,9 +284,10 @@ export const refreshTokenController = catchAsync(async (req, res) => {
 });
 
 // ***** RESET USER PASWORD CONTROLLER ***** //
-export const resetUserPasswordController = catchAsync(
-  async (req, res, next) => {
-    const token = req.headers["authorization"]?.split(" ")[1] || req.body.token;
+
+export const resetUserPasswordController = catchAsync(async (req, res) => {
+  const token = req.headers['authorization']?.split(' ')[1] || req.body.token;
+
 
     const { password } = req.body;
 
@@ -320,26 +320,9 @@ export const resetUserPasswordController = catchAsync(
       throw new AppError(USER_ERROR_MESSAGES.INVALID_EMAIL, 401);
     }
 
-    // Get user datas
-    const user = result[0];
-
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Update password in DB
-    const updateData = await prisma.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        password: hashedPassword,
-      },
-    });
-
-    if (Object.keys(updateData).length === 0) {
-      throw new AppError(USER_ERROR_MESSAGES.PASSWORD_RESET_FAILED, 401);
-    }
+  if (Object.keys(updateData).length === 0) {
+    throw new AppError(USER_ERROR_MESSAGES.PASSWORD_RESET_FAILED, 500);
+  }
 
     res.status(200).json({
       status: SUCCESS_MESSAGE.SUCCESS,
@@ -355,21 +338,24 @@ export const resetPasswordLinkController = catchAsync(async (req, res) => {
   // Handle email validation
   validateFields(email, "email", "string");
 
-  const user =
-    (await prisma.user.findUnique({
-      where: { email: email },
-      select: {
-        id: true,
-      },
-    })) ?? {};
+  const user = await prisma.user.findUnique({
+     where: {
+      email: email,
+    },
+    select: {
+      id: true,
+    },
+  }) ?? {};
 
-  if (Object.keys(user).length === 0) {
+  if(Object.keys(user).length === 0){
     throw new AppError(USER_ERROR_MESSAGES.WRONG_EMAIL_ID, 401);
   }
 
-  const resetToken = jwt.sign({ email: email }, config.jwt, {
-    expiresIn: "5m",
-  });
+  const resetToken = jwt.sign(
+    {email: email},
+    config.jwt,
+    {expiresIn: "5m"}
+  );
 
   // run async in background
   (async () => {
@@ -404,11 +390,9 @@ export const resetPasswordLinkController = catchAsync(async (req, res) => {
 });
 
 // ***** VALID JWT TOKEN CONTROLLER ***** //
-export const tokenExpireStatusController = catchAsync(
-  async (req, res, next) => {
-    res.status(200).json({
-      status: SUCCESS_MESSAGE.SUCCESS,
-      message: "Token is valid",
-    });
-  },
-);
+export const tokenExpireStatusController = catchAsync(async (req, res) => {
+  res.status(200).json({
+    status: SUCCESS_MESSAGE.SUCCESS,
+    message: 'Token is valid'
+  });
+});

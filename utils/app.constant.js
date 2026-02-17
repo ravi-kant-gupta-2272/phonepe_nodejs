@@ -44,7 +44,8 @@ export const SUCCESS_MESSAGE = Object.freeze({
 export const MERCHANT_ERROR_MESSAGES = Object.freeze({
   INVALID_CALLBACKURL: "callbackUrl is not a valid URL",
   MERCHANT_NOT_FOUND: "Merchant is not found",
-  ENVIRONMENT_INVALID: "environment must be one of: SANDBOX, PRODUCTION"
+  ENVIRONMENT_INVALID: "environment must be one of: SANDBOX, PRODUCTION",
+  FAILED_TO_SAVE: "Failed to Saved Data"
 });
 
 export const SUBSCRIPTIONS_ERROR_MESSAGES = Object.freeze({

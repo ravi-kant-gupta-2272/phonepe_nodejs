@@ -1,0 +1,96 @@
+
+{
+    "duration": "194ms",
+    "ip": "127.0.0.1",
+    "level": "info",
+    "message": "HTTP Request",
+    "method": "POST",
+    "requestBody": {
+        "email": "xyz4@gmail.com",
+        "password": "123456"
+    },
+    "responseBody": "{\"status\":\"success\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoieHl6NEBnbWFpbC5jb20iLCJpYXQiOjE3NzA4ODM5NjgsImV4cCI6MTc3MDk3MDM2OH0.m9iEaWRsOjoP5aNmFVW0CQRTgGDVIP1swTZjMc2-1uM\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsIm5hbWUiOiJ4eXo0QGdtYWlsLmNvbSIsInJlZnJlc2hUb2tlbklkIjoiZGQwYjY4MjctZjI2Mi00ODFmLTkwNGItYmIxNzRhYjkyYmZmIiwiaWF0IjoxNzcwODgzOTY4LCJleHAiOjE3NzE0ODg3Njh9.sI3Gh6Srdv_Qnje-0XRZ9WngsiZoZysg1uPf7-AL_jA\",\"user\":{\"id\":4,\"name\":\"admin4\",\"email\":\"xyz4@gmail.com\"}}",
+    "status": 200,
+    "timestamp": "2026-02-12 13:42:48",
+    "url": "/api/user/login"
+}
+
+{
+    "duration": "145ms",
+    "ip": "127.0.0.1",
+    "level": "info",
+    "message": "HTTP Request",
+    "method": "POST",
+    "requestBody": {
+        "email": "xyz4@gmail.com",
+        "password": "123456"
+    },
+    "responseBody": "{\"status\":\"success\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoieHl6NEBnbWFpbC5jb20iLCJpYXQiOjE3NzA4ODQwOTgsImV4cCI6MTc3MDk3MDQ5OH0.vLegE3fmxYs6cYYMkeARq4ydt6UaqwZ7UGiPEE1Gebg\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsIm5hbWUiOiJ4eXo0QGdtYWlsLmNvbSIsInJlZnJlc2hUb2tlbklkIjoiZWM0OWQ0MmYtOWU3Ny00ZmViLWE2ZjgtYjczZTk2ZjY5OTJjIiwiaWF0IjoxNzcwODg0MDk4LCJleHAiOjE3NzE0ODg4OTh9.e7qKp5Aym1ru0_eLokr2RITiPcMu1OVZLw-MWSDigek\",\"user\":{\"id\":4,\"name\":\"admin4\",\"email\":\"xyz4@gmail.com\"}}",
+    "status": 200,
+    "timestamp": "2026-02-12 13:44:58",
+    "url": "/api/user/login"
+}
+
+{
+    "duration": "149ms",
+    "ip": "127.0.0.1",
+    "level": "info",
+    "message": "HTTP Request",
+    "method": "POST",
+    "requestBody": {
+        "email": "xyz4@gmail.com",
+        "password": "123456"
+    },
+    "responseBody": "{\"status\":\"success\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoieHl6NEBnbWFpbC5jb20iLCJpYXQiOjE3NzA4ODQxNjMsImV4cCI6MTc3MDk3MDU2M30.Dku2m03T_Ui_WbElIfyVfiKD_BILn6AaW3voUtakQcY\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsIm5hbWUiOiJ4eXo0QGdtYWlsLmNvbSIsInJlZnJlc2hUb2tlbklkIjoiMmFlYjgyMWMtNzYxZC00ZTI1LWFmNGUtMTA2OTYyYWI1MzU3IiwiaWF0IjoxNzcwODg0MTYzLCJleHAiOjE3NzE0ODg5NjN9.VlQwXY5s6dN5PV_bKsvwXV6aPczEhRqU-9uXW5ldgoE\",\"user\":{\"id\":4,\"name\":\"admin4\",\"email\":\"xyz4@gmail.com\"}}",
+    "status": 200,
+    "timestamp": "2026-02-12 13:46:03",
+    "url": "/api/user/login"
+}
+
+{
+    "duration": "90ms",
+    "ip": "127.0.0.1",
+    "level": "info",
+    "message": "HTTP Request",
+    "method": "POST",
+    "requestBody": {
+        "email": "xyz4@gmail.com",
+        "password": "123456"
+    },
+    "responseBody": "{\"status\":\"success\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoieHl6NEBnbWFpbC5jb20iLCJpYXQiOjE3NzA4ODQ4NjAsImV4cCI6MTc3MDk3MTI2MH0.G0L3CqJUDU9xtcel59MD5KoxqM1SF1hM5si7edZtucs\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsIm5hbWUiOiJ4eXo0QGdtYWlsLmNvbSIsInJlZnJlc2hUb2tlbklkIjoiYmE4ZGNhYmItMWIzNS00MTlkLWI4ODItYjEyMzc0OTJiMDllIiwiaWF0IjoxNzcwODg0ODYwLCJleHAiOjE3NzE0ODk2NjB9.CGyhWKbSpJcMdDHmp823plCUg0jFdhigYVNHXGezcy0\",\"user\":{\"id\":4,\"name\":\"admin4\",\"email\":\"xyz4@gmail.com\"}}",
+    "status": 200,
+    "timestamp": "2026-02-12 13:57:40",
+    "url": "/api/user/login"
+}
+
+{
+    "duration": "157ms",
+    "ip": "127.0.0.1",
+    "level": "info",
+    "message": "HTTP Request",
+    "method": "POST",
+    "requestBody": {
+        "email": "xyz4@gmail.com",
+        "password": "****"
+    },
+    "responseBody": "{\"status\":\"success\",\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImVtYWlsIjoieHl6NEBnbWFpbC5jb20iLCJpYXQiOjE3NzA4ODQ5NjIsImV4cCI6MTc3MDk3MTM2Mn0.0o_gcqk8uNXLBM9bya5switArtpgVT0sgOHXbN2hXzY\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsIm5hbWUiOiJ4eXo0QGdtYWlsLmNvbSIsInJlZnJlc2hUb2tlbklkIjoiZWQ3ZTgxZmYtZDQzNy00Y2IwLTkyMDgtYjAyYzNhNGMyNzBiIiwiaWF0IjoxNzcwODg0OTYyLCJleHAiOjE3NzE0ODk3NjJ9.wqwO_dnLGtmTnvToOMJdUZ2e3VSv6ity5-e1u2DSYoA\",\"user\":{\"id\":4,\"name\":\"admin4\",\"email\":\"xyz4@gmail.com\"}}",
+    "status": 200,
+    "timestamp": "2026-02-12 13:59:22",
+    "url": "/api/user/login"
+}
+{"level":"error","message":"Email already exists","stack":"Error: Email already exists\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/controllers/user/user.controller.js:74:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2026-02-12 14:53:28"}
+{"duration":"66ms","ip":"127.0.0.1","level":"info","message":"HTTP Request","method":"POST","requestBody":{"email":"xyz4@gmail.com","name":"admin4","password":"****"},"status":409,"timestamp":"2026-02-12 14:53:28","url":"/api/user/register"}
+{"level":"error","message":"Cannot convert object to primitive value","stack":"TypeError: Cannot convert object to primitive value\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/controllers/user/user.controller.js:59:28\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/utils/catchAsync.js:3:21\n    at Layer.handleRequest (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/layer.js:152:17)\n    at next (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/route.js:157:13)\n    at Route.dispatch (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/route.js:117:3)\n    at handle (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:435:11)\n    at Layer.handleRequest (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/layer.js:152:17)\n    at /Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:295:15\n    at processParams (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:582:12)\n    at next (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:291:5)","timestamp":"2026-02-12 16:08:08"}
+{"duration":"5ms","ip":"127.0.0.1","level":"info","message":"HTTP Request","method":"POST","requestBody":{"email":"xyz4@gmail.com","name":"admin4","password":"****"},"status":500,"timestamp":"2026-02-12 16:08:08","url":"/api/user/register"}
+{"level":"error","message":"Cannot convert object to primitive value","stack":"TypeError: Cannot convert object to primitive value\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/controllers/user/user.controller.js:59:36\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/utils/catchAsync.js:3:21\n    at Layer.handleRequest (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/layer.js:152:17)\n    at next (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/route.js:157:13)\n    at Route.dispatch (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/route.js:117:3)\n    at handle (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:435:11)\n    at Layer.handleRequest (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/layer.js:152:17)\n    at /Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:295:15\n    at processParams (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:582:12)\n    at next (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:291:5)","timestamp":"2026-02-12 16:08:52"}
+{"duration":"5ms","ip":"127.0.0.1","level":"info","message":"HTTP Request","method":"POST","requestBody":{"email":"xyz4@gmail.com","name":"admin4","password":"****"},"status":500,"timestamp":"2026-02-12 16:08:52","url":"/api/user/register"}
+{"level":"error","message":"Cannot convert object to primitive value","stack":"TypeError: Cannot convert object to primitive value\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/controllers/user/user.controller.js:60:36\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/utils/catchAsync.js:3:21\n    at Layer.handleRequest (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/layer.js:152:17)\n    at next (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/route.js:157:13)\n    at Route.dispatch (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/route.js:117:3)\n    at handle (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:435:11)\n    at Layer.handleRequest (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/layer.js:152:17)\n    at /Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:295:15\n    at processParams (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:582:12)\n    at next (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:291:5)","timestamp":"2026-02-12 16:21:23"}
+{"duration":"8ms","ip":"127.0.0.1","level":"info","message":"HTTP Request","method":"POST","requestBody":{"email":"xyz4@gmail.com","name":"admin4","password":"****"},"status":500,"timestamp":"2026-02-12 16:21:23","url":"/api/user/register"}
+{"level":"error","message":"Cannot access 'user' before initialization","stack":"ReferenceError: Cannot access 'user' before initialization\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/controllers/user/user.controller.js:105:22\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/utils/catchAsync.js:3:21\n    at Layer.handleRequest (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/layer.js:152:17)\n    at next (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/route.js:157:13)\n    at Route.dispatch (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/route.js:117:3)\n    at handle (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:435:11)\n    at Layer.handleRequest (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/layer.js:152:17)\n    at /Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:295:15\n    at processParams (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:582:12)\n    at next (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:291:5)","timestamp":"2026-02-12 16:28:21"}
+{"duration":"6ms","ip":"127.0.0.1","level":"info","message":"HTTP Request","method":"POST","requestBody":{"email":"xyz4@gmail.com","password":"****"},"status":500,"timestamp":"2026-02-12 16:28:21","url":"/api/user/login"}
+{"duration":"166ms","ip":"127.0.0.1","level":"info","message":"HTTP Request","method":"POST","requestBody":{"email":"xyz4@gmail.com","password":"****"},"status":200,"timestamp":"2026-02-12 16:28:46","url":"/api/user/login"}
+{"level":"error","message":"jwt expired","stack":"TokenExpiredError: jwt expired\n    at /Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/jsonwebtoken/verify.js:190:21\n    at getSecret (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/jsonwebtoken/verify.js:97:14)\n    at module.exports [as verify] (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/jsonwebtoken/verify.js:101:10)\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/middlewares/auth.controller.js:19:23\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/utils/catchAsync.js:3:21\n    at Layer.handleRequest (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/layer.js:152:17)\n    at next (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/route.js:157:13)\n    at Route.dispatch (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/route.js:117:3)\n    at handle (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/index.js:435:11)\n    at Layer.handleRequest (/Users/ravikantgupta/phonepe_project/phonepe_nodejs/node_modules/router/lib/layer.js:152:17)","timestamp":"2026-02-12 16:31:19"}
+{"duration":"6ms","ip":"127.0.0.1","level":"info","message":"HTTP Request","method":"GET","status":400,"timestamp":"2026-02-12 16:31:19","url":"/api/merchant/get"}
+{"level":"error","message":"next is not defined","stack":"ReferenceError: next is not defined\n    at file:///Users/ravikantgupta/phonepe_project/phonepe_nodejs/middlewares/auth.controller.js:33:3\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2026-02-12 16:31:48"}
+{"duration":"68ms","ip":"127.0.0.1","level":"info","message":"HTTP Request","method":"GET","status":500,"timestamp":"2026-02-12 16:31:48","url":"/api/merchant/get"}
+{"duration":"113ms","ip":"127.0.0.1","level":"info","message":"HTTP Request","method":"GET","status":200,"timestamp":"2026-02-12 16:32:37","url":"/api/merchant/get"}

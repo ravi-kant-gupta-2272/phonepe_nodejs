@@ -1,17 +1,23 @@
-// import bcrypt from 'bcryptjs';
-import prisma from "../../config/prismaClient.js";
-import catchAsync from "../../utils/catchAsync.js";
-import AppError from "../../utils/app.error.js";
-import validateFields from "../../utils/validator.js";
-import {
-  Environment,
-  MERCHANT_ERROR_MESSAGES,
-  SUCCESS_MESSAGE,
-} from "../../utils/app.constant.js";
+import prisma from '../../config/prismaClient.js'
+import catchAsync from '../../utils/catchAsync.js';
+import AppError from '../../utils/app.error.js';
+import validateFields from '../../utils/validator.js';
+import {Environment, MERCHANT_ERROR_MESSAGES, SUCCESS_MESSAGE} from '../../utils/app.constant.js'
 
 // ***** GET MERCHANT CONTROLLER ***** //
 export const getMerchantAccount = catchAsync(async (req, res) => {
+  const limit = parseInt(req.query.limit) || 5;
+  const skip = parseInt(req.query.skip) || 0;
+
   const merchants = await prisma.merchant.findMany({
+    where: {
+      created_by: req.userId,
+    },
+    take: limit,
+    skip: skip,
+  });
+
+  const total = await prisma.merchant.count({
     where: {
       created_by: req.userId,
     },
@@ -19,10 +25,11 @@ export const getMerchantAccount = catchAsync(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    count: merchants.length || 0,
-    data: merchants || [],
+    count: total,
+    data: merchants,
   });
 });
+
 
 // ***** ADD MERCHANT CONTROLLER ***** //
 export const addMerchantAccount = catchAsync(async (req, res) => {
@@ -97,8 +104,8 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
     },
   });
 
-  if (!merchant) throw new AppError(`Failed to Saved Data`, 400);
-
+  if(!merchant) throw new AppError(MERCHANT_ERROR_MESSAGES.FAILED_TO_SAVE,500);
+  
   return res.status(201).json({
     status: "success",
     data: {
@@ -110,8 +117,9 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
 });
 
 // ***** UPDATE MERCHANT CONTROLLER ***** //
-export const updateMerchantAccount = catchAsync(async (req, res) => {
-  console.log("-=-=-=-=-=-=-");
+
+export const updateMerchantAccount = catchAsync(async(req, res) => {
+
   const { id } = req.params;
   const idNumber = Number(id);
 
@@ -208,8 +216,8 @@ export const deleteMerchantAccount = catchAsync(async (req, res) => {
     where: { id: idNumber },
   });
 
-  if (Object.keys(result).length === 0) {
-    throw new AppError(MERCHANT_ERROR_MESSAGES.MERCHANT_NOT_FOUND, 404);
+  if(Object.keys(result).length === 0) {
+    throw new AppError(MERCHANT_ERROR_MESSAGES.MERCHANT_NOT_FOUND, 500);
   }
 
   res.status(200).json({
