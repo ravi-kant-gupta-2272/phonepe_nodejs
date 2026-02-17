@@ -16,7 +16,7 @@ export const registerLinkController = catchAsync(async (req, res) => {
   // Handle email validation
   validateFields(email, 'email', 'string');
 
-  const resetToken = jwt.sign(
+  const registerToken = jwt.sign(
     {email: email},
     config.jwt,
     {expiresIn: "5m"}
@@ -30,8 +30,8 @@ export const registerLinkController = catchAsync(async (req, res) => {
       const html = `
         <h4>Hello User</h4>
         <p>Click the link below to complete your registration.</p>
-        <a href="http://localhost:5173/register?token=${resetToken}">
-          http://localhost:5173/register?token=${resetToken}
+        <a href="http://localhost:5173/register?token=${registerToken}">
+          http://localhost:5173/register?token=${registerToken}
         </a>
       `;
 
@@ -55,20 +55,36 @@ export const registerLinkController = catchAsync(async (req, res) => {
 
 // ***** REGISTER USER CONTROLLER ***** //
 export const registerUserController = catchAsync(async (req, res) => {
-  const { name, password, email } = req.body;
+  const token = req.headers['authorization']?.split(' ')[1];
+
+  const { name, password } = req.body;
 
   // Handle name validation
   validateFields(name, 'name', 'string');
 
   // Handle email validation
-  validateFields(email, 'email', 'string');
+  validateFields(token, 'email', 'string');
 
   // Handle password validation
   validateFields(password, 'password', 'string');
 
+  // Verify JWT signature
+  const decoded = jwt.verify(token, config.jwt);
+
+  // Manual expiry check (extra safety)
+  const currentTime = Math.floor(Date.now() / 1000);
+  if (decoded.exp < currentTime) {
+      throw new AppError(AUTH_ERROR_MESSAGES.TOKEN_EXPIRED, 401);
+  }
+
   const existingUser = await prisma.user.findUnique({
-    where: { email: email }
+    where: { email: decoded.email }
   });
+
+  // Handle user data validation
+  if (Object.keys(existingUser).length === 0) {
+    throw new AppError(USER_ERROR_MESSAGES.INVALID_EMAIL, 404);
+  }
 
   if (existingUser) {
     throw new AppError(USER_ERROR_MESSAGES.EMAIL_ALREADY_EXISTS, 409);
@@ -260,7 +276,7 @@ export const refreshTokenController = catchAsync(async (req, res) => {
 
 // ***** RESET USER PASWORD CONTROLLER ***** //
 export const resetUserPasswordController = catchAsync(async (req, res) => {
-  const token = req.headers['authorization']?.split(' ')[1] || req.body.token;
+  const token = req.headers['authorization']?.split(' ')[1];
 
   const { password } = req.body;
 
