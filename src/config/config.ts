@@ -26,7 +26,8 @@ interface dbConfigType{
   smtp: smtpType,
   jwt: string,
   bcrypt_salt_rounds: number,
-  encryption_key: string
+  encryption_key: string,
+  phonepe_base_url: string
 }
 
 
@@ -50,7 +51,8 @@ const dbConfig:dbConfigType = {
   },
   jwt: process.env.JWT_SECRET || "JWT_SECRET",
   bcrypt_salt_rounds: parseInt(process.env.BCRYPT_SALT_ROUNDS||"10") || 10,
-  encryption_key: process.env.ENCRYPTION_KEY!
+  encryption_key: process.env.ENCRYPTION_KEY!,
+  phonepe_base_url: process.env.DEV_BASE_URL!
 };
 
 export default dbConfig;

@@ -41,11 +41,6 @@ export const addMerchantAccount = catchAsync(async (req, res) => {
   const {userId} = userIdSchema.parse({userId: req.userId});
 
   const createdBy = userId;
-  // Validate callbackUrl
-  // validateFields(createdBy, "createdBy", 'number');
-
-  // Validate callbackUrl
-  // validateFields(clientVersion, "clientVersion", 'number');
 
   try {
     new URL(callbackUrl);
@@ -164,14 +159,9 @@ export const updateMerchantAccount = catchAsync(async(req, res) => {
 // ***** DELETE MERCHANT CONTROLLER ***** //
 export const deleteMerchantAccount = catchAsync(async(req, res) => {
   const { id } = merchantIdSchema.parse({id: Number(req.params.id)});
-  
-  const idNumber = Number(id);
-
-  //Validate id
-  // validateFields(idNumber, "id", 'number');
 
   const result = await prisma.merchant.delete({
-    where: { id: idNumber },
+    where: { id: id },
   });
 
   if(Object.keys(result).length === 0) {

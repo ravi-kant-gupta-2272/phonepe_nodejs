@@ -1,16 +1,18 @@
-import express from 'express';
+import express, {Application} from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import config from './config/config.js';
 import userRouter from './routes/user.routes.js';
 import merchantRoute from './routes/merchant.account.routes.js'
 import subscriptionsPlanRouter from './routes/subscriptions.plan.routes.js';
+import paymentRouter from "../src/routes/payment.routes.js"
 import globalError from './utils/global.error.js';
 import pool from "./db/db.js";
+import requestLogger from './middlewares/requestLogger.js';
 
 
 
-const app = express();
+const app:Application = express();
 
 const port: number = Number(config.app.port) || 3000;
 
@@ -20,6 +22,8 @@ app.use(morgan('dev'));
 
 app.use(express.json());
 
+app.use(requestLogger);
+
 // ***** user Routes ***** //
 app.use("/api/user", userRouter);
 
@@ -28,6 +32,9 @@ app.use("/api/merchant", merchantRoute);
 
 // ***** Subscriptions Routes ***** //
 app.use("/api/subscriptions", subscriptionsPlanRouter);
+
+// ***** Payment Routes ***** //
+app.use("/api",paymentRouter);
 
 // ***** global error handle ***** //
 app.use(globalError);

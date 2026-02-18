@@ -17,7 +17,7 @@ function extractPrismaArgumentError(message:string) {
 }
 
 const globalError: ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction ) => {
-    console.log("-=-=-=-=-=-=-=-=-=-=-=-4 -- "+ (err instanceof ZodError));
+    // console.log("-=-=-=-=-=-=-=-=-=-=-=-4 -- "+ (err instanceof ZodError));
     logger.error(err.message, { stack: process.env.NODE_ENV === "development" ? err.stack : undefined });
     
     let statusCode = err.statusCode || 500;
@@ -33,6 +33,7 @@ const globalError: ErrorRequestHandler = (err: any, req: Request, res: Response,
     }
 
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        
         switch (err.code) {
             case 'P2002':
                 err.message = `Duplicate value for ${err.meta?.target}`;
