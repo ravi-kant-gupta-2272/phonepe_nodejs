@@ -53,6 +53,7 @@ export type SubscriptionPlanMinAggregateOutputType = {
   is_active: boolean | null
   created_at: Date | null
   updated_at: Date | null
+  is_send: boolean | null
 }
 
 export type SubscriptionPlanMaxAggregateOutputType = {
@@ -66,6 +67,7 @@ export type SubscriptionPlanMaxAggregateOutputType = {
   is_active: boolean | null
   created_at: Date | null
   updated_at: Date | null
+  is_send: boolean | null
 }
 
 export type SubscriptionPlanCountAggregateOutputType = {
@@ -79,6 +81,7 @@ export type SubscriptionPlanCountAggregateOutputType = {
   is_active: number
   created_at: number
   updated_at: number
+  is_send: number
   _all: number
 }
 
@@ -110,6 +113,7 @@ export type SubscriptionPlanMinAggregateInputType = {
   is_active?: true
   created_at?: true
   updated_at?: true
+  is_send?: true
 }
 
 export type SubscriptionPlanMaxAggregateInputType = {
@@ -123,6 +127,7 @@ export type SubscriptionPlanMaxAggregateInputType = {
   is_active?: true
   created_at?: true
   updated_at?: true
+  is_send?: true
 }
 
 export type SubscriptionPlanCountAggregateInputType = {
@@ -136,6 +141,7 @@ export type SubscriptionPlanCountAggregateInputType = {
   is_active?: true
   created_at?: true
   updated_at?: true
+  is_send?: true
   _all?: true
 }
 
@@ -236,6 +242,7 @@ export type SubscriptionPlanGroupByOutputType = {
   is_active: boolean
   created_at: Date
   updated_at: Date
+  is_send: boolean
   _count: SubscriptionPlanCountAggregateOutputType | null
   _avg: SubscriptionPlanAvgAggregateOutputType | null
   _sum: SubscriptionPlanSumAggregateOutputType | null
@@ -272,6 +279,7 @@ export type SubscriptionPlanWhereInput = {
   is_active?: Prisma.BoolFilter<"SubscriptionPlan"> | boolean
   created_at?: Prisma.DateTimeFilter<"SubscriptionPlan"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"SubscriptionPlan"> | Date | string
+  is_send?: Prisma.BoolFilter<"SubscriptionPlan"> | boolean
   merchant?: Prisma.XOR<Prisma.MerchantScalarRelationFilter, Prisma.MerchantWhereInput>
 }
 
@@ -286,6 +294,7 @@ export type SubscriptionPlanOrderByWithRelationInput = {
   is_active?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  is_send?: Prisma.SortOrder
   merchant?: Prisma.MerchantOrderByWithRelationInput
 }
 
@@ -303,6 +312,7 @@ export type SubscriptionPlanWhereUniqueInput = Prisma.AtLeast<{
   is_active?: Prisma.BoolFilter<"SubscriptionPlan"> | boolean
   created_at?: Prisma.DateTimeFilter<"SubscriptionPlan"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"SubscriptionPlan"> | Date | string
+  is_send?: Prisma.BoolFilter<"SubscriptionPlan"> | boolean
   merchant?: Prisma.XOR<Prisma.MerchantScalarRelationFilter, Prisma.MerchantWhereInput>
 }, "id">
 
@@ -317,6 +327,7 @@ export type SubscriptionPlanOrderByWithAggregationInput = {
   is_active?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  is_send?: Prisma.SortOrder
   _count?: Prisma.SubscriptionPlanCountOrderByAggregateInput
   _avg?: Prisma.SubscriptionPlanAvgOrderByAggregateInput
   _max?: Prisma.SubscriptionPlanMaxOrderByAggregateInput
@@ -338,6 +349,7 @@ export type SubscriptionPlanScalarWhereWithAggregatesInput = {
   is_active?: Prisma.BoolWithAggregatesFilter<"SubscriptionPlan"> | boolean
   created_at?: Prisma.DateTimeWithAggregatesFilter<"SubscriptionPlan"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"SubscriptionPlan"> | Date | string
+  is_send?: Prisma.BoolWithAggregatesFilter<"SubscriptionPlan"> | boolean
 }
 
 export type SubscriptionPlanCreateInput = {
@@ -349,6 +361,7 @@ export type SubscriptionPlanCreateInput = {
   is_active?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  is_send?: boolean
   merchant: Prisma.MerchantCreateNestedOneWithoutSubscriptionPlansInput
 }
 
@@ -363,6 +376,7 @@ export type SubscriptionPlanUncheckedCreateInput = {
   is_active?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  is_send?: boolean
 }
 
 export type SubscriptionPlanUpdateInput = {
@@ -374,6 +388,7 @@ export type SubscriptionPlanUpdateInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  is_send?: Prisma.BoolFieldUpdateOperationsInput | boolean
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutSubscriptionPlansNestedInput
 }
 
@@ -388,6 +403,7 @@ export type SubscriptionPlanUncheckedUpdateInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  is_send?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type SubscriptionPlanCreateManyInput = {
@@ -401,6 +417,7 @@ export type SubscriptionPlanCreateManyInput = {
   is_active?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  is_send?: boolean
 }
 
 export type SubscriptionPlanUpdateManyMutationInput = {
@@ -412,6 +429,7 @@ export type SubscriptionPlanUpdateManyMutationInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  is_send?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type SubscriptionPlanUncheckedUpdateManyInput = {
@@ -425,6 +443,7 @@ export type SubscriptionPlanUncheckedUpdateManyInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  is_send?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type SubscriptionPlanListRelationFilter = {
@@ -448,6 +467,7 @@ export type SubscriptionPlanCountOrderByAggregateInput = {
   is_active?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  is_send?: Prisma.SortOrder
 }
 
 export type SubscriptionPlanAvgOrderByAggregateInput = {
@@ -469,6 +489,7 @@ export type SubscriptionPlanMaxOrderByAggregateInput = {
   is_active?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  is_send?: Prisma.SortOrder
 }
 
 export type SubscriptionPlanMinOrderByAggregateInput = {
@@ -482,6 +503,7 @@ export type SubscriptionPlanMinOrderByAggregateInput = {
   is_active?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  is_send?: Prisma.SortOrder
 }
 
 export type SubscriptionPlanSumOrderByAggregateInput = {
@@ -563,6 +585,7 @@ export type SubscriptionPlanCreateWithoutMerchantInput = {
   is_active?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  is_send?: boolean
 }
 
 export type SubscriptionPlanUncheckedCreateWithoutMerchantInput = {
@@ -575,6 +598,7 @@ export type SubscriptionPlanUncheckedCreateWithoutMerchantInput = {
   is_active?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  is_send?: boolean
 }
 
 export type SubscriptionPlanCreateOrConnectWithoutMerchantInput = {
@@ -617,6 +641,7 @@ export type SubscriptionPlanScalarWhereInput = {
   is_active?: Prisma.BoolFilter<"SubscriptionPlan"> | boolean
   created_at?: Prisma.DateTimeFilter<"SubscriptionPlan"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"SubscriptionPlan"> | Date | string
+  is_send?: Prisma.BoolFilter<"SubscriptionPlan"> | boolean
 }
 
 export type SubscriptionPlanCreateManyMerchantInput = {
@@ -629,6 +654,7 @@ export type SubscriptionPlanCreateManyMerchantInput = {
   is_active?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  is_send?: boolean
 }
 
 export type SubscriptionPlanUpdateWithoutMerchantInput = {
@@ -640,6 +666,7 @@ export type SubscriptionPlanUpdateWithoutMerchantInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  is_send?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type SubscriptionPlanUncheckedUpdateWithoutMerchantInput = {
@@ -652,6 +679,7 @@ export type SubscriptionPlanUncheckedUpdateWithoutMerchantInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  is_send?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type SubscriptionPlanUncheckedUpdateManyWithoutMerchantInput = {
@@ -664,6 +692,7 @@ export type SubscriptionPlanUncheckedUpdateManyWithoutMerchantInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  is_send?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -679,6 +708,7 @@ export type SubscriptionPlanSelect<ExtArgs extends runtime.Types.Extensions.Inte
   is_active?: boolean
   created_at?: boolean
   updated_at?: boolean
+  is_send?: boolean
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["subscriptionPlan"]>
 
@@ -693,6 +723,7 @@ export type SubscriptionPlanSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   is_active?: boolean
   created_at?: boolean
   updated_at?: boolean
+  is_send?: boolean
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["subscriptionPlan"]>
 
@@ -707,6 +738,7 @@ export type SubscriptionPlanSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   is_active?: boolean
   created_at?: boolean
   updated_at?: boolean
+  is_send?: boolean
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["subscriptionPlan"]>
 
@@ -721,9 +753,10 @@ export type SubscriptionPlanSelectScalar = {
   is_active?: boolean
   created_at?: boolean
   updated_at?: boolean
+  is_send?: boolean
 }
 
-export type SubscriptionPlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchant_id" | "plan_name" | "plan_type" | "amount" | "duration_days" | "billing_cycle_months" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["subscriptionPlan"]>
+export type SubscriptionPlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchant_id" | "plan_name" | "plan_type" | "amount" | "duration_days" | "billing_cycle_months" | "is_active" | "created_at" | "updated_at" | "is_send", ExtArgs["result"]["subscriptionPlan"]>
 export type SubscriptionPlanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
 }
@@ -750,6 +783,7 @@ export type $SubscriptionPlanPayload<ExtArgs extends runtime.Types.Extensions.In
     is_active: boolean
     created_at: Date
     updated_at: Date
+    is_send: boolean
   }, ExtArgs["result"]["subscriptionPlan"]>
   composites: {}
 }
@@ -1184,6 +1218,7 @@ export interface SubscriptionPlanFieldRefs {
   readonly is_active: Prisma.FieldRef<"SubscriptionPlan", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"SubscriptionPlan", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"SubscriptionPlan", 'DateTime'>
+  readonly is_send: Prisma.FieldRef<"SubscriptionPlan", 'Boolean'>
 }
     
 

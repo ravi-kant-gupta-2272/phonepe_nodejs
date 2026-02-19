@@ -45,6 +45,8 @@ model Merchant {
   created_by       Int
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
+  is_send          Boolean     @default(false)
+  is_active        Boolean     @default(true)
 
   subscriptionPlans SubscriptionPlan[]
 
@@ -78,6 +80,7 @@ model SubscriptionPlan {
   is_active            Boolean              @default(true) //
   created_at           DateTime             @default(now()) //
   updated_at           DateTime             @updatedAt //
+  is_send              Boolean              @default(false)
 
   @@index([merchant_id])
   @@map("subscription_plans")

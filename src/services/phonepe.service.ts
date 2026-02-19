@@ -3,11 +3,6 @@ import AppError from "../utils/app.error.js"
 import config from "../config/config.js";
 
 
-interface TokenResponse {
-  access_token: string;
-  expires_at: number;
-}
-
 interface CreateAutopayOrderArgs {
   clientId: string;
   clientVersion: number;
@@ -21,7 +16,6 @@ interface CreateAutopayOrderArgs {
   subscriptionStartAt: number;
   subscriptionExpireAt: number;
 }
-
 
 class PhonePeWrapper {
   
@@ -67,7 +61,7 @@ class PhonePeWrapper {
 
       // expires_at is usually in seconds (epoch)
       this.tokenExpiry = res.expires_at * 1000;
-
+// console.log(this.token);
       return this.token;
     } catch (error) {
       const err = error as any;
@@ -102,20 +96,21 @@ class PhonePeWrapper {
 
     // console.log(`TOKEN---- ${token}`);
     const expireAt =  Date.now() + subscriptionExpireAt * 24 * 60 * 60 * 1000;
-    console.log(`-----0==ExpireAt ${expireAt}`);
+    // console.log(`-----0==ExpireAt ${expireAt}`);
     const startAfter5Days = Date.now() + subscriptionStartAt * 24 * 60 * 60 * 1000;
-    console.log(`-----1==startAfter5Days ${startAfter5Days}`);
+    // console.log(`-----1==startAfter5Days ${startAfter5Days}`);
     const merchantOrderId = `ORD_${Date.now()}`;
     const subscriptionId = `SUB_${Date.now()}`;
-    // console.log(`-----==orderId ${merchantOrderId}`);
+    console.log(`-----==subscriptionId ${subscriptionId}`);
     // console.log(`-----==message==== ${message}`);
 
     const payload = {
       merchantOrderId: merchantOrderId,
       amount: trailAmount,
       metaInfo: {
-          udf1: "App Name.",
-          udf2: "App Id."
+          udf1: `merchantOrderId ${merchantOrderId}`,
+          udf2: `subscriptionId ${subscriptionId}`,
+          udf3: message
       },
       paymentFlow: {
         type: "SUBSCRIPTION_CHECKOUT_SETUP",
@@ -127,7 +122,7 @@ class PhonePeWrapper {
         subscriptionDetails: {
           subscriptionType: "RECURRING",
           merchantSubscriptionId: subscriptionId,
-          authWorkflowType: "TRANSACTION",//TRANSACTION
+          authWorkflowType: "TRANSACTION",
           amountType: "FIXED",
           maxAmount: maxamount,
           frequency: frequency,
@@ -253,7 +248,6 @@ class PhonePeWrapper {
       );
     }
   }
-
 
 // {
 //     "merchantOrderId": "{{merchantOrderId}}",

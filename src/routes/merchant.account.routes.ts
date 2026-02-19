@@ -1,6 +1,6 @@
 import express from 'express';
 import authController from '../middlewares/auth.controller.js';
-import {getMerchantAccount, addMerchantAccount, updateMerchantAccount, deleteMerchantAccount} from '../controllers/phonepe merchant/merchant.controller.js'
+import {getMerchantAccount, createMerchantAccount, updateMerchantAccount, deleteMerchantAccount} from '../controllers/phonepe merchant/merchant.controller.js'
 
 const merchantRoute = express.Router();
 
@@ -8,7 +8,7 @@ const merchantRoute = express.Router();
 merchantRoute.get('/get',authController, getMerchantAccount);
 
 // merchant route to Create Merchants accounts
-merchantRoute.post('/create',authController, addMerchantAccount);
+merchantRoute.post('/create',authController, createMerchantAccount);
 
 // merchant route to Update Merchant accounts
 merchantRoute.put('/update/:id',authController, updateMerchantAccount);

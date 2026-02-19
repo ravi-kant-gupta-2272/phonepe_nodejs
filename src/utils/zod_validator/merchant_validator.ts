@@ -13,12 +13,12 @@ export const phonePeConfigSchema = z.object({
   webhookUsername: z
     .string()
     .min(3, "Webhook username must be at least 3 characters")
-    .max(100),
+    .max(100).optional().default(""),
 
   webhookPassword: z
     .string()
     .min(8, "Webhook password must be at least 8 characters")
-    .max(100),
+    .max(100).optional().default(""),
 
   clientId: z
     .string()

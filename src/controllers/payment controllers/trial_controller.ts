@@ -2,7 +2,7 @@
 // import AppError from "../../utils/app.error.js";
 import phonePeWrapper from "../../services/phonepe.service.js"
 import validateFields from "../../utils/validator.js";
-import catchAsync from "../../utils/catchAsync.js"
+import catchAsync from "../../utils/catchAsync.js";
 
 export const trialPaymentController = catchAsync(async (req,res)=>{
 

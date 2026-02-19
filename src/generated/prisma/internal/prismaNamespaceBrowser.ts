@@ -99,7 +99,9 @@ export const MerchantScalarFieldEnum = {
   environment: 'environment',
   created_by: 'created_by',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  is_send: 'is_send',
+  is_active: 'is_active'
 } as const
 
 export type MerchantScalarFieldEnum = (typeof MerchantScalarFieldEnum)[keyof typeof MerchantScalarFieldEnum]
@@ -115,7 +117,8 @@ export const SubscriptionPlanScalarFieldEnum = {
   billing_cycle_months: 'billing_cycle_months',
   is_active: 'is_active',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  is_send: 'is_send'
 } as const
 
 export type SubscriptionPlanScalarFieldEnum = (typeof SubscriptionPlanScalarFieldEnum)[keyof typeof SubscriptionPlanScalarFieldEnum]

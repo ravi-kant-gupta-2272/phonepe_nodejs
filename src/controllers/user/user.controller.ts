@@ -1,22 +1,18 @@
 import bcrypt from 'bcryptjs';
-import {Request} from "express";
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import config from '../../config/config.js';
 import transporter from '../../config/smtp.js';
 import prisma from '../../config/prismaClient.js';
 import AppError from '../../utils/app.error.js';
-import validateFields from '../../utils/validator.js'
 import { USER_ERROR_MESSAGES,SUCCESS_MESSAGE, AUTH_ERROR_MESSAGES } from '../../utils/app.constant.js'
 import catchAsync from '../../utils/catchAsync.js';
 import { registerSchema, registerUserSchema, loginUserSchema, resetUserSchema, tokenSchema } from '../../utils/zod_validator/user_validator.js';
+import logger from '../../utils/logger.js';
 
 // ***** REGISTER USER LINK CONTROLLER ***** //
 export const registerLinkController = catchAsync(async (req, res) => {
   const { email } = registerSchema.parse(req.body);
-
-  // Handle email validation
-  // validateFields(email, 'email', 'string');
 
   const registerToken = jwt.sign(
     {email: email},
@@ -43,9 +39,9 @@ export const registerLinkController = catchAsync(async (req, res) => {
         subject,
         html,
       });
-      // console.log('Email sent successfully');
     } catch (error) {
-      // console.error('SMTP Error:', error.message);
+      const err = error as any;
+      logger.error(err.message, { stack: process.env.NODE_ENV === "development" ? err.stack : undefined });
     }
   })();
 
@@ -61,7 +57,6 @@ export const registerUserController = catchAsync(async (req, res) => {
 
   const { name, password } = req.body;
 
-  // Verify JWT signature
   const isVerified = jwt.verify(token, config.jwt);
 
   if(typeof isVerified === "string"){
@@ -130,7 +125,6 @@ export const loginUserController = catchAsync(async (req, res) => {
     },
   });
 
-  // Handle user data validation
   if (users.length === 0) {
     throw new AppError(USER_ERROR_MESSAGES.WRONG_EMAIL_ID, 401);
   }
@@ -142,17 +136,14 @@ export const loginUserController = catchAsync(async (req, res) => {
     throw new AppError(USER_ERROR_MESSAGES.INVALID_PASSWORD, 401);
   }
 
-  // Generate JWT valid for 7 days
   const accessToken = jwt.sign(
     { userId: user.id, email: user.email },
     config.jwt,
     { expiresIn: '1d' }
   );
 
-  // Generate refresh tokens Id
   const refreshTokenIdNew = uuidv4();
 
-  // Generate new refresh tokens
   const refreshToken = jwt.sign(
     {
       userId: user.id,
@@ -163,7 +154,6 @@ export const loginUserController = catchAsync(async (req, res) => {
     { expiresIn: '7d' }
   );
 
-  // Update updated_at into DB
   const result = await prisma.user.update({
     where: {
       id: user.id,
@@ -202,17 +192,16 @@ export const refreshTokenController = catchAsync(async (req, res) => {
   }
 
   const decoded: jwt.JwtPayload = isVerified;
-  // Expiry check
+
   const currentTime = Math.floor(Date.now() / 1000);
   if (decoded.exp! < currentTime) {
     return new AppError(AUTH_ERROR_MESSAGES.REFRESH_TOKEN_EXPIRED, 401);
   }
 
-  const userid = decoded.userId;  // User id from token
-  const email = decoded.email;    // User email from token
-  const refreshTokenId = decoded.refreshTokenId;  // Refresh token id from token
+  const userid = decoded.userId; 
+  const email = decoded.email;   
+  const refreshTokenId = decoded.refreshTokenId;  
 
-  // Verify refresh token against DB
   const userData = await prisma.user.findFirstOrThrow({
     where: {
       id: userid,
@@ -223,19 +212,16 @@ export const refreshTokenController = catchAsync(async (req, res) => {
     throw new AppError(AUTH_ERROR_MESSAGES.INVALID_REFRESH_TOKEN, 401);
   });
 
-  // Validate user id
   if (userid !== userData.id) {
     throw new AppError(AUTH_ERROR_MESSAGES.INVALID_REFRESH_TOKEN, 401);
   }
 
-  // Generate new access tokens
   const aceessToken = jwt.sign(
     { userId: userid, name: email },
     config.jwt,
     { expiresIn: '1d' }
   );
 
-  // Generate new refresh tokens
   const refreshTokenIdNew = uuidv4();
   const newRefreshToken = jwt.sign(
     {
@@ -247,7 +233,6 @@ export const refreshTokenController = catchAsync(async (req, res) => {
     { expiresIn: '7d' }
   );
 
-  // Update refresh token id in DB
   const result = await prisma.user.update({
     where: {
       id: userid
@@ -274,7 +259,6 @@ export const resetUserPasswordController = catchAsync(async (req, res) => {
 
   const { password } = resetUserSchema.parse(req.body);
 
-  // Verify JWT signature
   const isVerified = jwt.verify(token, config.jwt);
 
   if (typeof isVerified === 'string') {
@@ -283,7 +267,6 @@ export const resetUserPasswordController = catchAsync(async (req, res) => {
 
   const decoded: jwt.JwtPayload = isVerified;
 
-  // Manual expiry check (extra safety)
   const currentTime = Math.floor(Date.now() / 1000);
   if (decoded.exp! < currentTime) {
       throw new AppError(AUTH_ERROR_MESSAGES.TOKEN_EXPIRED, 401);
@@ -298,19 +281,15 @@ export const resetUserPasswordController = catchAsync(async (req, res) => {
     },
   });
 
-  // Handle user data validation
   if (result.length === 0) {
     throw new AppError(USER_ERROR_MESSAGES.INVALID_EMAIL, 404);
   }
 
-  // Get user datas
   const user = result[0];
 
-  // Hash password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  // Update password in DB
   const updateData = await prisma.user.update({
     where: {
       id: user.id,
@@ -373,9 +352,9 @@ console.log(resetToken);
         html,
       });
 
-      // console.log('Email sent successfully');
     } catch (error) {
-      // console.error('SMTP Error:', error.message);
+      const err = error as any;
+      logger.error(err.message, { stack: process.env.NODE_ENV === "development" ? err.stack : undefined });
     }
   })();
 

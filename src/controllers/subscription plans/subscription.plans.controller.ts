@@ -1,9 +1,47 @@
+import axios from "axios";
 import { Prisma } from "../../generated/prisma/client.js";
 import prisma from '../../config/prismaClient.js'
 import catchAsync from '../../utils/catchAsync.js';
 import AppError from '../../utils/app.error.js';
 import { MERCHANT_ERROR_MESSAGES, SUCCESS_MESSAGE, SUBSCRIPTIONS_ERROR_MESSAGES } from '../../utils/app.constant.js';
 import {createPlanSchema, updatePlanSchema, merchantIdSchema, subscriptionIdSchema} from '../../utils/zod_validator/subscription_validator.js'
+
+//***** Use the callback URL to send the merchant ID to the app server Method. *****/
+const syncWithServer = ({merchantId,SubscriptionId, callbackUrl, action}:{merchantId:number,SubscriptionId:number, callbackUrl:string, action: string}) =>{
+  (async()=>{
+    console.log("SYNCWITHSERVER DATA ==== "+merchantId+" "+action+" "+SubscriptionId);
+    const data = new URLSearchParams({
+      merchant_id: merchantId.toString(),
+      subscriptionId: SubscriptionId.toString(),
+      action: `${action}_subscription`
+    });
+
+    try {
+      const response = await axios.post(
+        callbackUrl,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          timeout: 30000,
+          timeoutErrorMessage: "Server TimeOut"
+        }
+      );
+      
+      if(response.data.status === true){
+        await prisma.merchant.update({
+          where: { id:  merchantId},
+          data: {
+            is_send: true
+          },
+        });
+      }
+    }catch(e){
+      console.log(e);
+    }
+  })
+}
 
 // ***** CREATE Subscription Plan *****//
 export const createSubscriptionPlan = catchAsync(async (req, res) => {
@@ -17,7 +55,6 @@ export const createSubscriptionPlan = catchAsync(async (req, res) => {
       is_active = false,
     } = createPlanSchema.parse(req.body);
 
-    // Ensure merchant exists
     const merchant = await prisma.merchant.findFirst({
       where: { id: merchant_id },
     });
@@ -41,6 +78,14 @@ export const createSubscriptionPlan = catchAsync(async (req, res) => {
     if(Object.keys(plan).length === 0){
       throw new AppError(SUBSCRIPTIONS_ERROR_MESSAGES.SUBSCRIPTIONS_CREATION_FAILED, 500);
     }
+
+    // TODO: Send Merchant Id, Subscription Id and Correspondence Data to App Srver through the callbackurl
+    syncWithServer({
+      merchantId: merchant.id, 
+      SubscriptionId: plan.id,
+      callbackUrl: merchant.callback_url,
+      action: "create"
+    });
 
     res.status(201).json({
       success: true,
@@ -82,24 +127,6 @@ export const updateSubscriptionPlan = catchAsync(async (req, res) => {
     is_active = true,
   } = updatePlanSchema.parse(req.body);
   
-  // Handle merchant_id validation
-  // validateFields(merchant_id, 'merchant_id', 'number');
-
-  // // Handle plan_name validation
-  // validateFields(plan_name, 'plan_name', 'string');
-
-  // // Handle plan_type validation
-  // validateFields(plan_type, 'plan_type', 'string');
-
-  // // Handle amount validation
-  // validateFields(amount, 'amount', 'number');
-
-  // // Handle duration_days validation
-  // validateFields(duration_days, 'duration_days', 'number');
-
-  // // Handle billing_cycle_months validation
-  // validateFields(billing_cycle_months, 'billing_cycle_months', 'number');
-
   const merchantId = merchant_id;
 
   const planExists = await prisma.subscriptionPlan.findUnique({
@@ -142,9 +169,6 @@ export const updateSubscriptionPlan = catchAsync(async (req, res) => {
 // ***** DELETE Subscription Plan *****//
 export const deleteSubscriptionPlan = catchAsync(async (req, res, next) => {
   const { subscriptionId } = subscriptionIdSchema.parse({subscriptionId: Number(req.params.id)});
-  // const  subscriptionId = Number(id);
-  //Validate id
-  // validateFields(subscriptionId, "id", 'number');
 
   const planExists = await prisma.subscriptionPlan.findFirst({
     where: {
@@ -156,6 +180,16 @@ export const deleteSubscriptionPlan = catchAsync(async (req, res, next) => {
     throw new AppError(SUBSCRIPTIONS_ERROR_MESSAGES.SUBSCRIPTIONS_NOT_FOUND, 404);
   }
 
+  const merchant = await prisma.merchant.findFirst({
+    where: {
+      id: planExists.merchant_id,
+    },
+  });
+
+  if (!merchant) {
+    throw new AppError(SUBSCRIPTIONS_ERROR_MESSAGES.FAILED_TO_DELETE_SUBSCRIPTION, 404);
+  }
+
   const result = await prisma.subscriptionPlan.delete({
     where: {
       id: subscriptionId,
@@ -165,6 +199,14 @@ export const deleteSubscriptionPlan = catchAsync(async (req, res, next) => {
   if(Object.keys(result).length === 0) {
     throw new AppError(SUBSCRIPTIONS_ERROR_MESSAGES.FAILED_TO_DELETE_SUBSCRIPTION, 500);
   }
+
+  // TODO: Send Deleted Merchant Id, Subscription Id and Correspondence Data to App Srver through the callbackurl
+  syncWithServer({
+    merchantId: merchant.id, 
+    SubscriptionId: result.id,
+    callbackUrl: merchant.callback_url,
+    action: "delete"
+  });
 
   res.status(200).json({
     success: true,
