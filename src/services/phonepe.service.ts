@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import AppError from "../utils/app.error.js"
 import config from "../config/config.js";
 
@@ -28,11 +28,8 @@ class PhonePeWrapper {
   }
 
   async getToken({ clientId, clientVersion, clientSecret }: { clientId: string; clientVersion: number; clientSecret: string }) {
-
-    // Reuse token if still valid
-    // console.log(this.token)
+   
     if (this.token && Date.now() < this.tokenExpiry) {
-      // console.log("-=-=-=-=-=-=11111")
       return this.token;
     }
 
@@ -56,19 +53,18 @@ class PhonePeWrapper {
 
       const res = response.data;
 
-      // Store token + expiry
       this.token = res.access_token;
 
-      // expires_at is usually in seconds (epoch)
       this.tokenExpiry = res.expires_at * 1000;
-// console.log(this.token);
       return this.token;
     } catch (error) {
-      const err = error as any;
-      console.error("Token API failed");
-      console.error("Status:", err.response?.status);
-      console.error("Response:", err.response?.data);
-      throw new AppError(err.response?.data, err.response?.status);
+      const err = error as AxiosError;
+       const statusCode = err.response?.status || 500;
+
+      return new AppError(
+         err.message,
+        statusCode
+      );
     }
   }
 
@@ -94,15 +90,10 @@ class PhonePeWrapper {
       clientSecret: clientSecret
     });
 
-    // console.log(`TOKEN---- ${token}`);
     const expireAt =  Date.now() + subscriptionExpireAt * 24 * 60 * 60 * 1000;
-    // console.log(`-----0==ExpireAt ${expireAt}`);
     const startAfter5Days = Date.now() + subscriptionStartAt * 24 * 60 * 60 * 1000;
-    // console.log(`-----1==startAfter5Days ${startAfter5Days}`);
     const merchantOrderId = `ORD_${Date.now()}`;
     const subscriptionId = `SUB_${Date.now()}`;
-    console.log(`-----==subscriptionId ${subscriptionId}`);
-    // console.log(`-----==message==== ${message}`);
 
     const payload = {
       merchantOrderId: merchantOrderId,
@@ -133,7 +124,6 @@ class PhonePeWrapper {
       },
     };
 
-    // console.log(`-----2==payload ${payload}`);
 
     try {
       const { data } = await axios.post(
@@ -146,138 +136,25 @@ class PhonePeWrapper {
           },
         }
       );
-      // console.log(`-----3== ${data}`);
       return {...data, merchantOrderId};
     } catch (error) {
-      console.log(error);
-      const err = error as any;
-      return new AppError(err, 400);
-    }
+      if (error instanceof Error) {
+        return new AppError(error.message, 400);
 
-  }
+      }else if( error instanceof AxiosError ){
 
-  // ***** URL Create Auto pay mandate Method *****//
-  async createUrlAutopayOrder(arg: CreateAutopayOrderArgs) {
-    const {
-      clientId,
-      clientVersion,
-      clientSecret,
-      trailAmount,
-      message,
-      maxamount,
-      frequency,
-      redirectUrl,
-      cancelRedirectUrl,
-      subscriptionStartAt,
-      subscriptionExpireAt
-    } = arg;
+        const err = error as AxiosError;
+        const statusCode = err.response?.status || 500;
 
-    // 🔹 Get Access Token
-    const token = await this.getToken({
-      clientId,
-      clientVersion,
-      clientSecret
-    });
+        return new AppError(
+          err.message,
+          statusCode
+        );
 
-    // 🔹 Calculate Dates
-    const expireAt =
-      Date.now() + subscriptionExpireAt * 24 * 60 * 60 * 1000;
-
-    const startAt =
-      Date.now() + subscriptionStartAt * 24 * 60 * 60 * 1000;
-
-    const merchantOrderId = `ORD_${Date.now()}`;
-    const subscriptionId = `SUB_${Date.now()}`;
-
-    const payload = {
-      merchantOrderId,
-      amount: trailAmount,
-      expireAfter: 3000,
-      metaInfo: {
-        udf1: "App Name",
-        udf2: "App Id"
-      },
-      paymentFlow: {
-        type: "SUBSCRIPTION_CHECKOUT_SETUP",
-        message,
-        merchantUrls: {
-          redirectUrl,
-          cancelRedirectUrl,
-        },
-        subscriptionDetails: {
-          subscriptionType: "RECURRING",
-          merchantSubscriptionId: subscriptionId,
-          authWorkflowType: "TRANSACTION",
-          amountType: "FIXED",
-          maxAmount: maxamount,
-          frequency,
-          productType: "UPI_MANDATE",
-          startAt,
-          expireAt,
-        },
-      },
-    };
-
-    try {
-      const { data } = await axios.post(
-        `${config.phonepe_base_url}/apis/pg-sandbox/checkout/v2/pay`, // ✅ updated endpoint
-        payload,
-        {
-          headers: {
-            Authorization: `O-Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      return {
-        success: true,
-        merchantOrderId,
-        subscriptionId,
-        ...data,
-      };
-
-    } catch (error: any) {
-      console.error("PhonePe Autopay Error:",
-        error.response?.data || error.message
-      );
-
-      throw new AppError(
-        error.response?.data?.message || "PhonePe Autopay Failed",
-        400
-      );
+      }
+      return new AppError("Unknown error", 400);
     }
   }
-
-// {
-//     "merchantOrderId": "{{merchantOrderId}}",
-//     "amount": 47900,
-//     "paymentFlow": {
-//         "type": "SUBSCRIPTION_CHECKOUT_SETUP",
-//         "message": "Payment message used for collect requests",
-//         "merchantUrls": {
-//             "redirectUrl": "www.google.com",
-//             "cancelRedirectUrl": "www.google.com"
-//         },
-//         "subscriptionDetails": {
-//             "subscriptionType": "RECURRING",
-//             "merchantSubscriptionId": "{{merchantSubId}}",
-//             "authWorkflowType": "TRANSACTION",
-//             "amountType": "FIXED",
-//             "maxAmount": 47900,
-//             "frequency": "ON_DEMAND",
-// 	    "productType": "UPI_MANDATE",
-//             "expireAt": 1779689282000
-//         }
-//     },
-//     "expireAfter": 3000,
-//     "metaInfo": {
-//         "udf1": "some meta info of max length 256",
-//         "udf2": "some meta info of max length 256"
-//     }
-// }
-
-
 
 // ***** Subscription Order Status Method *****//
   async checkOrderStatus({
@@ -293,8 +170,6 @@ class PhonePeWrapper {
       clientSecret: clientSecret
     });
 
-    // console.log(`TOKEN---- ${token}`);
-
     const requestHeaders = {
       Authorization: `O-Bearer ${token}`,
       "Content-Type": "application/json"
@@ -308,14 +183,23 @@ class PhonePeWrapper {
 
     try {
       const response = await axios.request(options);
-      // console.log("-=-=-=-=-=-=-=-222222");
-      // console.log(response);
       return response.data;
     } catch (error) {
-      // console.log("-=-=-=-=-=-=-=-7777777");
-      // console.error(error);
-      const err = error as any;
-      return new AppError(err, 400);
+      if (error instanceof Error) {
+        return new AppError(error.message, 400);
+
+      }else if( error instanceof AxiosError ){
+
+        const err = error as AxiosError;
+        const statusCode = err.response?.status || 500;
+
+        return new AppError(
+          err.message,
+          statusCode
+        );
+
+      }
+      return new AppError("Unknown error", 400);
     }
   }
 
@@ -333,8 +217,6 @@ class PhonePeWrapper {
       clientSecret: clientSecret
     });
 
-    // console.log(`TOKEN---- ${token}`);
-
     const requestHeaders = {
       Authorization: `O-Bearer ${token}`,
       "Content-Type": "application/json"
@@ -348,14 +230,23 @@ class PhonePeWrapper {
 
     try {
       const response = await axios.request(options);
-      // console.log("-=-=-=-=-=-=-=-222222");
-      // console.log(response.data);
       return response.data;
     } catch (error) {
-      // console.log("-=-=-=-=-=-=-=-7777777");
-      // console.error(error);
-      const err = error as any;
-      return new AppError(err, 400);
+      if (error instanceof Error) {
+        return new AppError(error.message, 400);
+
+      }else if( error instanceof AxiosError ){
+
+        const err = error as AxiosError;
+        const statusCode = err.response?.status || 500;
+
+        return new AppError(
+          err.message,
+          statusCode
+        );
+
+      }
+      return new AppError("Unknown error", 400);
     }
 
   }
@@ -378,8 +269,6 @@ class PhonePeWrapper {
         clientVersion: clientVersion,
         clientSecret: clientSecret
       });
-
-      // console.log(`TOKEN---- ${token}`);
     
       const requestHeaders = {
         Authorization: `O-Bearer ${token}`,
@@ -387,8 +276,8 @@ class PhonePeWrapper {
       };
 
       const requestBody = {
+        "merchantOrderId": "ORD_1773919398836",
         "amount": amount,
-        // "expireAt": 1620891733101,
         "metaInfo": {
           "udf1": message
         },
@@ -408,12 +297,23 @@ class PhonePeWrapper {
       };
 
       const response = await axios.request(options);
-      // console.log(response.data);
       return response.data;
     } catch (error) {
-      // console.log(error);
-      const err = error as any;
-      return new AppError(err, 400);
+      if (error instanceof Error) {
+        return new AppError(error.message, 400);
+
+      }else if( error instanceof AxiosError ){
+
+        const err = error as AxiosError;
+        const statusCode = err.response?.status || 500;
+
+        return new AppError(
+          err.message,
+          statusCode
+        );
+
+      }
+      return new AppError("Unknown error", 400);
     }
   }
 
@@ -434,8 +334,6 @@ class PhonePeWrapper {
         clientSecret: clientSecret
       });
 
-      // console.log(`TOKEN---- ${token}`);
-
       const requestHeaders = {
         "Content-Type": "application/json",
         "Authorization": `O-Bearer ${token}`
@@ -454,12 +352,23 @@ class PhonePeWrapper {
 
       const response = await axios.request(options);
         
-      // console.log(response.data);
       return response.data;
     } catch (error) {
-      // console.log(error);
-      const err = error as any;
-      return new AppError(err, 400);
+      if (error instanceof Error) {
+        return new AppError(error.message, 400);
+
+      }else if( error instanceof AxiosError ){
+
+        const err = error as AxiosError;
+        const statusCode = err.response?.status || 500;
+
+        return new AppError(
+          err.message,
+          statusCode
+        );
+
+      }
+      return new AppError("Unknown error", 400);
     }
   }
 

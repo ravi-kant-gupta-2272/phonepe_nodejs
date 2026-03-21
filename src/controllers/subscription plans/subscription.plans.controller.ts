@@ -8,8 +8,11 @@ import {createPlanSchema, updatePlanSchema, merchantIdSchema, subscriptionIdSche
 
 //***** Use the callback URL to send the merchant ID to the app server Method. *****/
 const syncWithServer = ({merchantId,SubscriptionId, callbackUrl, action}:{merchantId:number,SubscriptionId:number, callbackUrl:string, action: string}) =>{
+  
+  /// TODO: Send Data to App Server.
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   (async()=>{
-    console.log("SYNCWITHSERVER DATA ==== "+merchantId+" "+action+" "+SubscriptionId);
     const data = new URLSearchParams({
       merchant_id: merchantId.toString(),
       subscriptionId: SubscriptionId.toString(),
@@ -167,7 +170,7 @@ export const updateSubscriptionPlan = catchAsync(async (req, res) => {
 });
 
 // ***** DELETE Subscription Plan *****//
-export const deleteSubscriptionPlan = catchAsync(async (req, res, next) => {
+export const deleteSubscriptionPlan = catchAsync(async (req, res) => {
   const { subscriptionId } = subscriptionIdSchema.parse({subscriptionId: Number(req.params.id)});
 
   const planExists = await prisma.subscriptionPlan.findFirst({
@@ -213,45 +216,3 @@ export const deleteSubscriptionPlan = catchAsync(async (req, res, next) => {
     message: SUCCESS_MESSAGE.SUCCESS,
   });
 });
-
-// ***** GET ALL Subscription Plans *****//
-// export const getAllSubscriptionPlans = catchAsync(async (req, res) => {
-  
-//   const plans = await prisma.subscriptionPlan.findMany({
-//       orderBy: {
-//         created_at: 'desc',
-//       },
-//     });
-
-//     res.status(200).json({
-//       success: true,
-//       count: plans.length,
-//       data: plans,
-//     });
-// });
-
-
-
-// ***** GET Subscription Plan BY ID *****//
-// export const getSubscriptionPlanById = catchAsync(async (req, res) => {
-//   const { id } = req.params;
-
-//     const plan = await prisma.subscriptionPlan.findUnique({
-//       where: {
-//         id: BigInt(id),
-//       },
-//       include: {
-//         merchant: true,
-//       },
-//     });
-
-//     if (!plan) {
-//       throw new AppError('Subscription plan not found', 404);
-//     }
-
-//     res.status(200).json({
-//       success: true,
-//       data: plan,
-//     });
-// });
-

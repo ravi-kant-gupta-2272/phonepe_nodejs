@@ -7,8 +7,7 @@ import prisma from '../../config/prismaClient.js';
 import AppError from '../../utils/app.error.js';
 import { USER_ERROR_MESSAGES,SUCCESS_MESSAGE, AUTH_ERROR_MESSAGES } from '../../utils/app.constant.js'
 import catchAsync from '../../utils/catchAsync.js';
-import { registerSchema, registerUserSchema, loginUserSchema, resetUserSchema, tokenSchema } from '../../utils/zod_validator/user_validator.js';
-import logger from '../../utils/logger.js';
+import { registerSchema, loginUserSchema, resetUserSchema, tokenSchema } from '../../utils/zod_validator/user_validator.js';
 
 // ***** REGISTER USER LINK CONTROLLER ***** //
 export const registerLinkController = catchAsync(async (req, res) => {
@@ -17,12 +16,9 @@ export const registerLinkController = catchAsync(async (req, res) => {
   const registerToken = jwt.sign(
     {email: email},
     config.jwt,
-    {expiresIn: "5m"}
+    {expiresIn: "59m"}
   );
 
-  // run async in background
-  (async () => {
-    try {
       const to = email;
       const subject = 'Registration Link Email';
       const html = `
@@ -39,11 +35,6 @@ export const registerLinkController = catchAsync(async (req, res) => {
         subject,
         html,
       });
-    } catch (error) {
-      const err = error as any;
-      logger.error(err.message, { stack: process.env.NODE_ENV === "development" ? err.stack : undefined });
-    }
-  })();
 
   res.status(200).json({
     status: SUCCESS_MESSAGE.SUCCESS,
@@ -53,22 +44,22 @@ export const registerLinkController = catchAsync(async (req, res) => {
 
 // ***** REGISTER USER CONTROLLER ***** //
 export const registerUserController = catchAsync(async (req, res) => {
-  const {token} = tokenSchema.parse(req.headers['authorization']?.split(' ')[1]);
+
+  const {token} = tokenSchema.parse({token: req.headers['authorization']?.split(' ')[1]});
 
   const { name, password } = req.body;
 
   const isVerified = jwt.verify(token, config.jwt);
-
   if(typeof isVerified === "string"){
     throw new AppError(AUTH_ERROR_MESSAGES.INVALID_TOKEN, 401);
   }
-  
+
   const decoded: jwt.JwtPayload = isVerified;
 
   const currentTime = Math.floor(Date.now() / 1000);
 
   if (decoded.exp! < currentTime) {
-      throw new AppError(AUTH_ERROR_MESSAGES.TOKEN_EXPIRED, 401);
+    throw new AppError(AUTH_ERROR_MESSAGES.TOKEN_EXPIRED, 401);
   }
 
   const existingUser = await prisma.user.findUnique({
@@ -76,15 +67,10 @@ export const registerUserController = catchAsync(async (req, res) => {
   })??{};
 
   // Handle user data validation
-  if (Object.keys(existingUser).length === 0) {
-    throw new AppError(USER_ERROR_MESSAGES.INVALID_EMAIL, 404);
-  }
-
-  if (existingUser) {
-    // console.log("-=-=-=-=-=-=-=-=-=-=-=-2")
+  if (Object.keys(existingUser).length !== 0) {
     throw new AppError(USER_ERROR_MESSAGES.EMAIL_ALREADY_EXISTS, 409);
   }
-// console.log("-=-=-=-=-=-=-=-=-=-=-=-3")
+
   // Hash password
   const salt = await bcrypt.genSalt(config.bcrypt_salt_rounds);
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -331,10 +317,7 @@ export const resetPasswordLinkController = catchAsync(async (req, res) => {
     config.jwt,
     {expiresIn: "5m"}
   );
-console.log(resetToken);
-  // run async in background
-  (async () => {
-    try {
+
       const to = email;
       const subject = 'Reset Password Email';
       const html = `
@@ -351,12 +334,6 @@ console.log(resetToken);
         subject,
         html,
       });
-
-    } catch (error) {
-      const err = error as any;
-      logger.error(err.message, { stack: process.env.NODE_ENV === "development" ? err.stack : undefined });
-    }
-  })();
 
   res.status(200).json({
     status: SUCCESS_MESSAGE.SUCCESS,

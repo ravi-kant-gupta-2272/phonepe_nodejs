@@ -17,7 +17,6 @@ function extractPrismaArgumentError(message:string) {
 }
 
 const globalError: ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction ) => {
-    // console.log("-=-=-=-=-=-=-=-=-=-=-=-4 -- "+ (err instanceof ZodError));
     logger.error(err.message, { stack: process.env.NODE_ENV === "development" ? err.stack : undefined });
     
     let statusCode = err.statusCode || 500;
@@ -59,16 +58,9 @@ const globalError: ErrorRequestHandler = (err: any, req: Request, res: Response,
     }
 
     if (err instanceof ZodError) {
-        // err.message = err.name;
-        // console.log(err.message)
-        // console.log("ZOD ISSSUES--- "+err.issues.join("-----"))
-        // console.log("ZOD NAME--- "+err.name)
+        
         const error = err.issues.map(issue => `${issue.path} -${issue.message.split(":")[1]}`
             
-        //     ({
-        //     field: issue.path.join("-"),
-        //     message: issue.message
-        // })
     )
         return res.status(400).json({
             status: "error",

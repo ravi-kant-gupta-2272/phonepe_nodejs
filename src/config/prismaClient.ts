@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client.js';
 import dbConfig from './config.js';
@@ -29,7 +30,6 @@ const prisma = basePrisma.$extends({
        ENCRYPT_FIELDS.forEach(field => {
           if (data?.[field]) {
             data[field] = encrypt(data[field]);
-            console.log(data[field]);
           }
         });
 

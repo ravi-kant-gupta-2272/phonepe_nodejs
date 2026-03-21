@@ -8,8 +8,8 @@ import {phonePeConfigSchema, userIdSchema, merchantIdSchema} from "../../utils/z
 
 //***** Use the callback URL to send the merchant ID to the app server Method. *****/
 const syncWithServer = ({merchantId, callbackUrl, action}:{merchantId:number, callbackUrl:string, action: string}) =>{
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   (async()=>{
-    console.log("SYNCWITHSERVER DATA ==== "+merchantId+action);
     const data = new URLSearchParams({
       merchant_id: merchantId.toString(),
       action: `${action}_merchant`
@@ -82,8 +82,6 @@ export const createMerchantAccount = catchAsync(async (req, res) => {
   const {
     name,
     callbackUrl,
-    // webhookUsername,
-    // webhookPassword,
     clientId,
     clientVersion,
     clientSecret,
@@ -157,8 +155,6 @@ export const updateMerchantAccount = catchAsync(async(req, res) => {
   const {
     name,
     callbackUrl,
-    // webhookUsername,
-    // webhookPassword,
     clientId,
     clientVersion,
     clientSecret,
@@ -232,4 +228,3 @@ export const deleteMerchantAccount = catchAsync(async(req, res) => {
     message: SUCCESS_MESSAGE.MERCHANT_DELETED_SUCCESSFULLY,
   });
 })
-

@@ -20,14 +20,21 @@ type smtpType = {
   pass: string
 }
 
+type webhookType = {
+  username: string,
+  password: string,
+}
+
 interface dbConfigType{
   db: dbType,
   app: appType,
   smtp: smtpType,
+  webhook: webhookType,
   jwt: string,
   bcrypt_salt_rounds: number,
   encryption_key: string,
-  phonepe_base_url: string
+  phonepe_base_url: string,
+  node_env: string
 }
 
 
@@ -49,10 +56,15 @@ const dbConfig:dbConfigType = {
     user: process.env.SMTP_USER!,
     pass: process.env.SMTP_PASS!
   },
+  webhook:{
+    username: process.env.PHONEPE_WEBHOOK_USERNAME!,
+    password: process.env.PHONEPE_WEBHOOK_PASSWORD!
+  },
   jwt: process.env.JWT_SECRET || "JWT_SECRET",
   bcrypt_salt_rounds: parseInt(process.env.BCRYPT_SALT_ROUNDS||"10") || 10,
   encryption_key: process.env.ENCRYPTION_KEY!,
-  phonepe_base_url: process.env.DEV_BASE_URL!
+  phonepe_base_url: process.env.DEV_BASE_URL!,
+  node_env: process.env.NODE_ENV ?? "development"
 };
 
 export default dbConfig;

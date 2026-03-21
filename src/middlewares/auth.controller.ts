@@ -6,13 +6,6 @@ import AppError from '../utils/app.error.js'
 import catchAsync from '../utils/catchAsync.js';
 import {AUTH_ERROR_MESSAGES} from "../utils/app.constant.js"
 
-declare global {
-  namespace Express {
-    interface Request {
-      userId?: string;
-    }
-  }
-}
 
 const authController = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   

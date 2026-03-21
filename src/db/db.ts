@@ -9,11 +9,20 @@ const pool = new Pool({
   port: config.db.db_port
 });
 
-pool.connect()
-  .then(() => {
+export const connectDb = async () => {
+  try {
+    const client = await pool.connect();
+
     console.log("PostgreSQL connected");
-  })
-  .catch(err => console.error("Connection error", err));
+
+    client.release();
+
+  } catch (err: unknown) {
+    console.error("Connection error", err);
+    process.exit(1);
+  }
+};
+
 
 pool.on("error", (err) => {
   console.error("PostgreSQL client error:", err.message);
@@ -27,4 +36,4 @@ process.on('unhandledRejection', (reason) => {
   console.error('Unhandled Rejection:', reason);
 });
 
-export default pool;
+// export default pool;

@@ -1,49 +1,28 @@
-// import prisma from "../../config/prismaClient.js";
-// import AppError from "../../utils/app.error.js";
 import phonePeWrapper from "../../services/phonepe.service.js"
-import validateFields from "../../utils/validator.js";
 import catchAsync from "../../utils/catchAsync.js";
+import { paymentSchema, orderStatusSchema, debitSubscriptionSchema, subscriptionStatusSchema, SubscriptionCancelSchema } from "../../utils/zod_validator/payment_validator.js"
 
-export const trialPaymentController = catchAsync(async (req,res)=>{
+/// Trial Plan Payment Controller
+export const paymentController = catchAsync(async (req, res) => {
+    const validatedData = paymentSchema.parse(req.body);
 
     const {
         clientId,
         clientVersion,
         clientSecret,
-        trail_amount, 
-        message, 
-        maxamount, 
-        frequency, 
+        trail_amount,
+        message,
+        maxamount,
+        frequency,
         redirect_url,
         cancel_redirect_url,
         subscription_start_at,
-        subscription_expire_at
-    } = req.body as {
-        clientId: string;
-        clientVersion: number;
-        clientSecret: string;
-        trail_amount: number;
-        message: string;
-        maxamount: number;
-        frequency: string;
-        redirect_url: string;
-        cancel_redirect_url: string;
-        subscription_start_at: number;
-        subscription_expire_at: number;
-    };
-
-    validateFields(trail_amount, "trail_amount", "number");
-    validateFields(message, "message", "string");
-    validateFields(maxamount, "maxamount", "number");
-    validateFields(frequency, "frequency", "string");
-    validateFields(redirect_url, "redirect_url", "string");
-    validateFields(cancel_redirect_url, "cancel_redirect_url", "string");
-    validateFields(subscription_start_at, "subscription_start_at", "number");
-    validateFields(subscription_expire_at, "subscription_expire_at", "number");
+        subscription_expire_at,
+    } = validatedData;
 
     const result = await phonePeWrapper.createAutopayOrder({
-        clientId, 
-        clientVersion, 
+        clientId,
+        clientVersion,
         clientSecret,
         trailAmount: trail_amount,
         message,
@@ -54,111 +33,147 @@ export const trialPaymentController = catchAsync(async (req,res)=>{
         subscriptionStartAt: subscription_start_at,
         subscriptionExpireAt: subscription_expire_at
     });
-    
+
+    /// TODO: Save into DB.
+
     res.send({
-        success: true, 
+        success: true,
         data: result
     });
-    
+
 })
 
-export const checkOrderStatusController = catchAsync(async(req, res)=>{
-    
-    const { 
-        merchantOrderId, 
+/// Check Payment Status
+export const paymentRedirectController = catchAsync(async (req, res) => {
+
+    const { merchantOrderId } = req.query as { merchantOrderId: string };
+
+    const status = await phonePeWrapper.checkOrderStatus({
+        clientId: process.env.PHONEPE_CLIENT_ID!,
+        clientVersion: Number(process.env.PHONEPE_CLIENT_VERSION),
+        clientSecret: process.env.PHONEPE_CLIENT_SECRET!,
+        merchantOrderId
+    });
+
+    if (status.state === "COMPLETED") {
+        /// TODO: check subscription type from DB and insert.
+
+        return res.send("Payment Success");
+    }
+    /// TODO: Save into DB.
+
+    return res.send("Payment Failed");
+});
+
+export const checkOrderStatusController = catchAsync(async (req, res) => {
+
+    const validateData = orderStatusSchema.parse(req.body);
+
+    const {
+        merchantOrderId,
         clientId,
         clientVersion,
         clientSecret
-    } = req.body;
+    } = validateData;
 
-    // console.log("=-=-=-=-=-=-=1---1---1")
-    
     const result = await phonePeWrapper.checkOrderStatus({
-        clientId: clientId, 
-        clientVersion: clientVersion, 
+        clientId: clientId,
+        clientVersion: clientVersion,
         clientSecret: clientSecret,
         merchantOrderId: merchantOrderId
     });
 
+    /// TODO: Save into DB.
+
     res.send({
-        success: true, 
+        success: true,
         data: result
     });
 })
 
-export const checkSubscriptionStatusController = catchAsync(async(req, res)=>{
-    
-    const {
-        clientId,
-        clientVersion,
-        clientSecret,
-        subscriptionId
-    } = req.body;
+// Auto Debit after mandate by user.
+export const notifyRedemptionController = catchAsync(async (req, res) => {
+    const validatedData = debitSubscriptionSchema.parse(req.body);
 
-    // console.log("=-=-=-=-=-=-=1---1---1")
-    
-    const result = phonePeWrapper.subscriptionStatus({
-        clientId, 
-        clientVersion, 
-        clientSecret,
-        subscriptionId
-    });
-
-    res.send({
-        success: true, 
-        data: result
-    });
-})
-
-export const notifyRedemptionController = catchAsync(async(req, res)=>{
-    
     const {
         clientId,
         clientVersion,
         clientSecret,
         merchantSubscriptionId,
         amount,
-        message
-    } = req.body;
+        message,
+    } = validatedData;
 
-    // console.log("=-=-=-=-=-=-=1---1---1");
-    
-    const result = phonePeWrapper.notifyRedemption({
-        clientId, 
-        clientVersion, 
+    const result = await phonePeWrapper.notifyRedemption({
+        clientId,
+        clientVersion,
         clientSecret,
         merchantSubscriptionId,
         amount,
         message
     });
+    /// TODO: Save into DB.
 
     res.send({
-        success: true, 
+        success: true,
         data: result
     });
 })
 
-export const subscriptionCancelController = catchAsync(async(req, res)=>{
-    
+/*
+Use to check Status of Subscription after redmption.
+                |
+                |
+                |
+                V
+*/
+export const checkSubscriptionStatusController = catchAsync(async (req, res) => {
+    const validateData = subscriptionStatusSchema.parse(req.body);
+
+    const {
+        clientId,
+        clientVersion,
+        clientSecret,
+        subscriptionId
+    } = validateData;
+
+    const result = await phonePeWrapper.subscriptionStatus({
+        clientId,
+        clientVersion,
+        clientSecret,
+        subscriptionId
+    });
+
+    /// TODO: Save into DB.
+
+    res.send({
+        success: true,
+        data: result
+    });
+})
+
+export const subscriptionCancelController = catchAsync(async (req, res) => {
+
+    const validateData = SubscriptionCancelSchema.parse(req.body);
+
     const {
         clientId,
         clientVersion,
         clientSecret,
         merchantSubscriptionId
-    } = req.body;
+    } = validateData;
 
-    // console.log("=-=-=-=-=-=-=1---1---1");
-    
     const result = phonePeWrapper.subscriptionCancel({
-        clientId, 
-        clientVersion, 
+        clientId,
+        clientVersion,
         clientSecret,
         merchantSubscriptionId
     });
+    /// TODO: Save into DB.
 
     res.send({
-        success: true, 
+        success: true,
         data: result
     });
-    
+
 })

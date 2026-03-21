@@ -1,19 +1,18 @@
 import express from 'express';
 import {
-    trialPaymentController, 
+    paymentController, 
     checkOrderStatusController, 
     checkSubscriptionStatusController,
     notifyRedemptionController,
     subscriptionCancelController
 } from "../controllers/payment controllers/trial_controller.js"
-import { phonepeWebhook } from '../controllers/phonepe webhook/phonepepg.webhook.js';
+import { phonepeWebhookHandler } from '../controllers/phonepe webhook/phonepepg.webhook.js';
 import { merchantAccountMiddleware } from '../middlewares/merchant.account.middleware.js';
-// import authController from '../middlewares/auth.controller.js';
 
 const paymentRouter = express.Router();
 
-// ***** Trial payment router *****//
-paymentRouter.post("/payment/trial", merchantAccountMiddleware, trialPaymentController);
+// ***** Payment router *****//
+paymentRouter.post("/payment/trial", merchantAccountMiddleware, paymentController);
 
 // ***** Check Order Status payment router *****//
 paymentRouter.post("/payment/check-order-status", merchantAccountMiddleware, checkOrderStatusController);
@@ -27,9 +26,8 @@ paymentRouter.post("/payment/notify-redemption", merchantAccountMiddleware, noti
 // ***** Subscription Cancel router *****//
 paymentRouter.post("/payment/notify-redemption", merchantAccountMiddleware, subscriptionCancelController);
 
-
 // ***** Webhook router *****//
-paymentRouter.post("/payment/webhook", phonepeWebhook);
+paymentRouter.post("/payment/webhook", phonepeWebhookHandler);
 
 
 
