@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  name             String    @db.VarChar(100)
+  password         String    @db.VarChar(255)
+  email            String    @unique @db.VarChar(150)
+  is_login         Boolean   @default(false)
+  refresh_token_id String?   @db.VarChar(255)
+  updated_at       DateTime?
+  created_at       DateTime  @default(now())
+
+  @@map("users")
+}
+
+enum Environment {
+  SANDBOX
+  PRODUCTION
+}
+
+model Merchant {
+  id               Int         @id @default(autoincrement())
+  name             String
+  callback_url     String
+  webhook_username String
+  webhook_password String
+  client_id        String      @unique
+  client_version   Int
+  client_secret    String      @unique
+  merchant_id      String      @unique
+  environment      Environment
+  created_by       Int
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  is_send          Boolean     @default(false)
+  is_active        Boolean     @default(true)
+
+  subscriptionPlans SubscriptionPlan[]
+
+  @@index([merchant_id])
+  @@index([client_id])
+  @@map("merchant")
+}
+
+enum SubscriptionPlanType {
+  TRIAL
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+model SubscriptionPlan {
+  id                   Int                  @id @default(autoincrement()) //
+  merchant_id          Int //
+  merchant             Merchant             @relation(fields: [merchant_id], references: [id], onDelete: Cascade)
+  plan_name            String               @db.VarChar(100) //
+  plan_type            SubscriptionPlanType //
+  amount               Decimal              @db.Decimal(10, 2) //
+  duration_days        Int //
+  // TRIAL     → admin sets (e.g. 7, 14)
+  // MONTHLY   → 30
+  // QUARTERLY → 90
+  // YEARLY    → 365
+  billing_cycle_months Int? //
+  // MONTHLY = 1, QUARTERLY = 3, YEARLY = 12
+  // 0 for TRIAL
+  is_active            Boolean              @default(true) //
+  created_at           DateTime             @default(now()) //
+  updated_at           DateTime             @updatedAt //
+  is_send              Boolean              @default(false)
+
+  @@index([merchant_id])
+  @@map("subscription_plans")
+}

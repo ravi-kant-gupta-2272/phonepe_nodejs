@@ -1,2 +1,6 @@
-# Node modules
 node_modules/
+.env
+/generated/prisma
+.husky
+logs/
+*.log
