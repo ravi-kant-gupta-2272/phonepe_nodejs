@@ -4,3 +4,7 @@ node_modules/
 # environment
 .env
 /generated/prisma
+.husky
+
+logs/
+*.log
